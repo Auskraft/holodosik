@@ -214,6 +214,57 @@ class AppL10nRu extends AppL10n {
   String get toastDiscarded => 'Списано';
 
   @override
+  String get toastAdded => 'Добавлено в запасы';
+
+  @override
+  String get addTitle => 'Новый запас';
+
+  @override
+  String get fieldName => 'Название';
+
+  @override
+  String get fieldNameHint => 'Например, Молоко';
+
+  @override
+  String get qtyModeTitle => 'Как считаем количество';
+
+  @override
+  String get qtyModeCount => 'Поштучно';
+
+  @override
+  String get qtyModeWeight => 'Вес и объём';
+
+  @override
+  String get qtyModePacks => 'Упаковки';
+
+  @override
+  String get packsCountLabel => 'Упаковок';
+
+  @override
+  String get perPackLabel => 'В каждой';
+
+  @override
+  String get fieldCategory => 'Категория';
+
+  @override
+  String get fieldLocation => 'Место хранения';
+
+  @override
+  String get fieldExpiry => 'Срок годности';
+
+  @override
+  String get pickDate => 'Выбрать дату';
+
+  @override
+  String get saveAdd => 'Добавить в запасы';
+
+  @override
+  String get validationName => 'Введите название';
+
+  @override
+  String get validationCategory => 'Выберите категорию';
+
+  @override
   String get urgentTitle => 'Срочное';
 
   @override

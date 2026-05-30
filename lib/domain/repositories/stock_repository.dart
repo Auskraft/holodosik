@@ -6,6 +6,9 @@ abstract interface class StockRepository {
   /// Поток актуального списка запасов (обновляется после любой мутации).
   Stream<List<StockEntry>> watchInventory();
 
+  /// Добавляет новую партию в запасы.
+  Future<void> addBatch(StockEntry entry);
+
   /// Расход: уменьшает остаток партии и пишет запись в журнал. Пустая партия
   /// уходит из активного списка.
   Future<void> applyUsage(String batchId, UsageEvent event);

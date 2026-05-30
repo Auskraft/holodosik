@@ -447,6 +447,108 @@ abstract class AppL10n {
   /// **'Списано'**
   String get toastDiscarded;
 
+  /// No description provided for @toastAdded.
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавлено в запасы'**
+  String get toastAdded;
+
+  /// No description provided for @addTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Новый запас'**
+  String get addTitle;
+
+  /// No description provided for @fieldName.
+  ///
+  /// In ru, this message translates to:
+  /// **'Название'**
+  String get fieldName;
+
+  /// No description provided for @fieldNameHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Например, Молоко'**
+  String get fieldNameHint;
+
+  /// No description provided for @qtyModeTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Как считаем количество'**
+  String get qtyModeTitle;
+
+  /// No description provided for @qtyModeCount.
+  ///
+  /// In ru, this message translates to:
+  /// **'Поштучно'**
+  String get qtyModeCount;
+
+  /// No description provided for @qtyModeWeight.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вес и объём'**
+  String get qtyModeWeight;
+
+  /// No description provided for @qtyModePacks.
+  ///
+  /// In ru, this message translates to:
+  /// **'Упаковки'**
+  String get qtyModePacks;
+
+  /// No description provided for @packsCountLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Упаковок'**
+  String get packsCountLabel;
+
+  /// No description provided for @perPackLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'В каждой'**
+  String get perPackLabel;
+
+  /// No description provided for @fieldCategory.
+  ///
+  /// In ru, this message translates to:
+  /// **'Категория'**
+  String get fieldCategory;
+
+  /// No description provided for @fieldLocation.
+  ///
+  /// In ru, this message translates to:
+  /// **'Место хранения'**
+  String get fieldLocation;
+
+  /// No description provided for @fieldExpiry.
+  ///
+  /// In ru, this message translates to:
+  /// **'Срок годности'**
+  String get fieldExpiry;
+
+  /// No description provided for @pickDate.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выбрать дату'**
+  String get pickDate;
+
+  /// No description provided for @saveAdd.
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить в запасы'**
+  String get saveAdd;
+
+  /// No description provided for @validationName.
+  ///
+  /// In ru, this message translates to:
+  /// **'Введите название'**
+  String get validationName;
+
+  /// No description provided for @validationCategory.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выберите категорию'**
+  String get validationCategory;
+
   /// No description provided for @urgentTitle.
   ///
   /// In ru, this message translates to:

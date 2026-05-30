@@ -4,6 +4,7 @@ import '../../core/haptics/app_haptics.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/context_theme_x.dart';
 import '../../l10n/app_localizations.dart';
+import '../add_batch/view/add_batch_page.dart';
 import '../catalog/view/catalog_page.dart';
 import '../inventory/view/inventory_page.dart';
 import '../settings/view/settings_page.dart';
@@ -67,7 +68,12 @@ class _AppShellState extends State<AppShell> {
         ),
         floatingActionButton: showFab
             ? FloatingActionButton(
-                onPressed: AppHaptics.light,
+                onPressed: () {
+                  AppHaptics.light();
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const AddBatchPage()),
+                  );
+                },
                 backgroundColor: context.colors.accent,
                 foregroundColor: context.colors.onAccent,
                 shape: RoundedRectangleBorder(

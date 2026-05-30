@@ -22,6 +22,12 @@ class InMemoryStockRepository implements StockRepository {
   }
 
   @override
+  Future<void> addBatch(StockEntry entry) async {
+    _entries.insert(0, entry);
+    _emit();
+  }
+
+  @override
   Future<void> applyUsage(String batchId, UsageEvent event) async {
     final i = _entries.indexWhere((e) => e.batch.id == batchId);
     if (i < 0) return;
