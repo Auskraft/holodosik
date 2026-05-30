@@ -110,6 +110,8 @@
   "fieldAmount": "Количество",
   "fieldUnit": "Единица измерения",
   "categoryOther": "Прочее",
+  "recentTitle": "Ранее добавленные",
+  "searchPromptEmpty": "Начните вводить название продукта",
   "fieldName": "Название",
   "fieldNameHint": "Например, Молоко",
   "qtyModeTitle": "Как считаем количество",

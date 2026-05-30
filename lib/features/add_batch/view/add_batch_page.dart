@@ -6,7 +6,7 @@ import '../../../core/formatting/date_formatter.dart';
 import '../../../core/formatting/quantity_formatter.dart';
 import '../../../core/formatting/unit_labels.dart';
 import '../../../core/haptics/app_haptics.dart';
-import '../../../core/icons/category_icons.dart';
+import '../../../core/icons/ingredient_emoji.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/context_theme_x.dart';
 import '../../../domain/entities/product.dart';
@@ -43,6 +43,7 @@ class _AddBatchPageState extends State<AddBatchPage> {
   final _amountCtrl = TextEditingController();
 
   List<Product> _all = const [];
+  List<Product> _recent = const [];
   Map<String, ProductCategory> _categoryById = const {};
   bool _loading = true;
 
@@ -66,15 +67,30 @@ class _AddBatchPageState extends State<AddBatchPage> {
 
   Future<void> _load() async {
     final repo = locator<CatalogRepository>();
+    final inventory = context.read<InventoryCubit>();
     await repo.ensureSeeded();
     final products = await repo.products();
     final categories = await repo.categories();
+    final usedUp = await inventory.loadUsedUp();
     if (!mounted) return;
 
     final byId = {for (final c in categories) c.id: c};
+
+    // Ранее добавленные: уникальные продукты из активных и использованных партий.
+    final seen = <String>{};
+    final recent = <Product>[];
+    for (final e in [...inventory.state.all, ...usedUp]) {
+      byId.putIfAbsent(e.category.id, () => e.category);
+      if (seen.add(e.product.id)) {
+        final matched = products.where((p) => p.id == e.product.id).firstOrNull;
+        recent.add(matched ?? e.product);
+      }
+    }
+
     final edit = widget.editEntry;
     setState(() {
       _all = products;
+      _recent = recent;
       _categoryById = byId;
       _loading = false;
       if (edit != null) {
@@ -306,20 +322,38 @@ class _AddBatchPageState extends State<AddBatchPage> {
   Widget _resultsList() {
     final l = AppL10n.of(context);
     final query = _searchCtrl.text.trim();
-    final results = _search();
-
-    // Плоский список: «добавить вручную» + заголовки категорий + продукты.
     final rows = <Widget>[];
-    if (query.isNotEmpty) rows.add(_manualButton(l, query));
 
-    String? lastCat;
-    for (final p in results) {
-      final cat = _categoryById[p.categoryId];
-      if (cat?.id != lastCat) {
-        lastCat = cat?.id;
-        rows.add(_categoryHeader(cat?.name ?? ''));
+    if (query.isEmpty) {
+      // Пустой поиск — показываем только ранее добавленные продукты.
+      if (_recent.isEmpty) {
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.xxl),
+            child: Text(
+              l.searchPromptEmpty,
+              textAlign: TextAlign.center,
+              style: context.textTheme.bodyMedium
+                  ?.copyWith(color: context.colors.textFaint),
+            ),
+          ),
+        );
       }
-      rows.add(_resultTile(p));
+      rows.add(_categoryHeader(l.recentTitle));
+      for (final p in _recent) {
+        rows.add(_resultTile(p));
+      }
+    } else {
+      rows.add(_manualButton(l, query));
+      String? lastCat;
+      for (final p in _search()) {
+        final cat = _categoryById[p.categoryId];
+        if (cat?.id != lastCat) {
+          lastCat = cat?.id;
+          rows.add(_categoryHeader(cat?.name ?? ''));
+        }
+        rows.add(_resultTile(p));
+      }
     }
 
     return ListView(
@@ -391,9 +425,9 @@ class _AddBatchPageState extends State<AddBatchPage> {
       ),
       child: ListTile(
         onTap: () => _select(p),
-        leading: Icon(
-          CategoryIcons.of(cat?.iconId ?? 'other'),
-          color: colors.textMuted,
+        leading: Text(
+          ProductEmoji.of(p.name, category: cat?.name ?? ''),
+          style: const TextStyle(fontSize: 24),
         ),
         title: Text(p.name, style: context.textTheme.bodyLarge),
         trailing: Icon(Icons.add_circle_outline, color: colors.accent),
@@ -463,9 +497,12 @@ class _AddBatchPageState extends State<AddBatchPage> {
         children: [
           Row(
             children: [
-              Icon(
-                CategoryIcons.of(_selectedCategory?.iconId ?? 'other'),
-                color: colors.textMuted,
+              Text(
+                ProductEmoji.of(
+                  _selected!.name,
+                  category: _selectedCategory?.name ?? '',
+                ),
+                style: const TextStyle(fontSize: 24),
               ),
               const SizedBox(width: AppSpacing.s),
               Expanded(

@@ -246,6 +246,12 @@ class AppL10nRu extends AppL10n {
   String get categoryOther => 'Прочее';
 
   @override
+  String get recentTitle => 'Ранее добавленные';
+
+  @override
+  String get searchPromptEmpty => 'Начните вводить название продукта';
+
+  @override
   String get fieldName => 'Название';
 
   @override

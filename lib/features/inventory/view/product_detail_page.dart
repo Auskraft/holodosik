@@ -6,7 +6,7 @@ import '../../../core/formatting/expiry_presenter.dart';
 import '../../../core/formatting/quantity_formatter.dart';
 import '../../../core/formatting/usage_reason_presenter.dart';
 import '../../../core/haptics/app_haptics.dart';
-import '../../../core/icons/category_icons.dart';
+import '../../../core/icons/ingredient_emoji.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/context_theme_x.dart';
 import '../../../domain/entities/stock.dart';
@@ -88,10 +88,10 @@ class _Hero extends StatelessWidget {
             color: colors.surface3,
             borderRadius: BorderRadius.circular(AppRadius.lg),
           ),
-          child: Icon(
-            CategoryIcons.of(entry.category.iconId),
-            size: 36,
-            color: colors.textMuted,
+          alignment: Alignment.center,
+          child: Text(
+            ProductEmoji.of(entry.name, category: entry.category.name),
+            style: const TextStyle(fontSize: 38),
           ),
         ),
         const SizedBox(width: AppSpacing.m),

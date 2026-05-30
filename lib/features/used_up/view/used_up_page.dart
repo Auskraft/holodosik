@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/formatting/date_formatter.dart';
-import '../../../core/icons/category_icons.dart';
+import '../../../core/icons/ingredient_emoji.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/context_theme_x.dart';
 import '../../../domain/entities/stock.dart';
@@ -75,10 +75,10 @@ class _UsedUpRow extends StatelessWidget {
               color: colors.surface3,
               borderRadius: BorderRadius.circular(AppRadius.sm),
             ),
-            child: Icon(
-              CategoryIcons.of(entry.category.iconId),
-              size: 22,
-              color: colors.textFaint,
+            alignment: Alignment.center,
+            child: Text(
+              ProductEmoji.of(entry.name, category: entry.category.name),
+              style: const TextStyle(fontSize: 20),
             ),
           ),
           const SizedBox(width: AppSpacing.m),

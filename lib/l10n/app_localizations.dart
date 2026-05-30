@@ -507,6 +507,18 @@ abstract class AppL10n {
   /// **'Прочее'**
   String get categoryOther;
 
+  /// No description provided for @recentTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ранее добавленные'**
+  String get recentTitle;
+
+  /// No description provided for @searchPromptEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начните вводить название продукта'**
+  String get searchPromptEmpty;
+
   /// No description provided for @fieldName.
   ///
   /// In ru, this message translates to:

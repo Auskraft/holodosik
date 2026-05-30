@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/formatting/expiry_presenter.dart';
 import '../../../core/formatting/quantity_formatter.dart';
 import '../../../core/haptics/app_haptics.dart';
-import '../../../core/icons/category_icons.dart';
+import '../../../core/icons/ingredient_emoji.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/context_theme_x.dart';
 import '../../../domain/entities/stock.dart';
@@ -48,7 +48,12 @@ class StockCard extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _Bubble(iconId: entry.category.iconId),
+                  _Bubble(
+                    emoji: ProductEmoji.of(
+                      entry.name,
+                      category: entry.category.name,
+                    ),
+                  ),
                   const SizedBox(width: AppSpacing.m),
                   Expanded(
                     child: Column(
@@ -116,8 +121,8 @@ class StockCard extends StatelessWidget {
 }
 
 class _Bubble extends StatelessWidget {
-  const _Bubble({required this.iconId});
-  final String iconId;
+  const _Bubble({required this.emoji});
+  final String emoji;
 
   @override
   Widget build(BuildContext context) {
@@ -125,11 +130,12 @@ class _Bubble extends StatelessWidget {
     return Container(
       width: 52,
       height: 52,
+      alignment: Alignment.center,
       decoration: BoxDecoration(
         color: colors.surface3,
         borderRadius: BorderRadius.circular(AppRadius.md),
       ),
-      child: Icon(CategoryIcons.of(iconId), color: colors.textMuted),
+      child: Text(emoji, style: const TextStyle(fontSize: 26)),
     );
   }
 }
