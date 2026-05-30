@@ -41,14 +41,17 @@ class SqfliteStockRepository implements StockRepository {
       entry.batch.quantity,
       QuantityMath.total(event.amount),
     );
+    await _dataSource.insertUsage(batchId, event);
     if (QuantityMath.isEmpty(left)) {
-      await _dataSource.deleteBatch(batchId);
+      await _dataSource.markUsedUp(batchId, left);
     } else {
-      await _dataSource.insertUsage(batchId, event);
       await _dataSource.updateQuantity(batchId, left);
     }
     await _emit();
   }
+
+  @override
+  Future<List<StockEntry>> loadUsedUp() => _dataSource.loadEntries(usedUp: true);
 
   @override
   Future<void> discard(String batchId) async {

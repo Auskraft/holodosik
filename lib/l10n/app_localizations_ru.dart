@@ -274,6 +274,15 @@ class AppL10nRu extends AppL10n {
   String get validationCategory => 'Выберите категорию';
 
   @override
+  String get usedUpTitle => 'Использованные';
+
+  @override
+  String get usedUpEmpty => 'Здесь пока пусто';
+
+  @override
+  String get usedUpLabel => 'Израсходовано';
+
+  @override
   String get urgentTitle => 'Срочное';
 
   @override

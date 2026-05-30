@@ -40,6 +40,8 @@ class InventoryCubit extends Cubit<InventoryState> {
 
   Future<void> discard(String batchId) => _repository.discard(batchId);
 
+  Future<List<StockEntry>> loadUsedUp() => _repository.loadUsedUp();
+
   @override
   Future<void> close() {
     _sub.cancel();

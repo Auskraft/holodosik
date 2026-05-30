@@ -12,7 +12,7 @@ class StockLocalDataSource {
   StockLocalDataSource(this._db);
   final AppDatabase _db;
 
-  Future<List<StockEntry>> loadEntries() async {
+  Future<List<StockEntry>> loadEntries({bool usedUp = false}) async {
     final db = await _db.database;
     final rows = await db.rawQuery('''
       SELECT b.*, p.name AS product_name, p.category_id AS product_category_id,
@@ -20,7 +20,8 @@ class StockLocalDataSource {
       FROM stock_batches b
       JOIN products p ON p.id = b.product_id
       JOIN categories c ON c.id = p.category_id
-    ''');
+      WHERE b.used_up = ?
+    ''', [usedUp ? 1 : 0]);
 
     final events = await db.query('usage_events', orderBy: 'timestamp ASC');
     final byBatch = <String, List<UsageEvent>>{};
@@ -97,6 +98,17 @@ class StockLocalDataSource {
     await db.update(
       'stock_batches',
       _quantityColumns(quantity, 'qty_'),
+      where: 'id = ?',
+      whereArgs: [batchId],
+    );
+  }
+
+  /// Помечает партию израсходованной (уходит в «Использованные», история цела).
+  Future<void> markUsedUp(String batchId, Quantity finalQuantity) async {
+    final db = await _db.database;
+    await db.update(
+      'stock_batches',
+      {..._quantityColumns(finalQuantity, 'qty_'), 'used_up': 1},
       where: 'id = ?',
       whereArgs: [batchId],
     );

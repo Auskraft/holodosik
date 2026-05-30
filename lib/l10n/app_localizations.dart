@@ -567,6 +567,24 @@ abstract class AppL10n {
   /// **'Выберите категорию'**
   String get validationCategory;
 
+  /// No description provided for @usedUpTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Использованные'**
+  String get usedUpTitle;
+
+  /// No description provided for @usedUpEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Здесь пока пусто'**
+  String get usedUpEmpty;
+
+  /// No description provided for @usedUpLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Израсходовано'**
+  String get usedUpLabel;
+
   /// No description provided for @urgentTitle.
   ///
   /// In ru, this message translates to:

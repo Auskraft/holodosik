@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/haptics/app_haptics.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/theme/context_theme_x.dart';
@@ -8,6 +9,7 @@ import '../../../domain/entities/stock.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/search_field.dart';
+import '../../used_up/view/used_up_page.dart';
 import '../bloc/inventory_cubit.dart';
 import '../bloc/inventory_state.dart';
 import '../widgets/inventory_controls.dart';
@@ -123,14 +125,31 @@ class _Header extends StatelessWidget {
       if (attentionCount > 0) l.inventoryAttentionCount(attentionCount),
     ];
 
-    return Column(
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(l.appName, style: AppTypography.brand(colors.accent)),
-        const SizedBox(height: AppSpacing.xs),
-        Text(
-          parts.join(' · '),
-          style: context.textTheme.bodyMedium?.copyWith(color: colors.textMuted),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(l.appName, style: AppTypography.brand(colors.accent)),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                parts.join(' · '),
+                style: context.textTheme.bodyMedium?.copyWith(color: colors.textMuted),
+              ),
+            ],
+          ),
+        ),
+        IconButton(
+          tooltip: AppL10n.of(context).usedUpTitle,
+          icon: Icon(Icons.history, color: colors.textMuted),
+          onPressed: () {
+            AppHaptics.light();
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const UsedUpPage()),
+            );
+          },
         ),
       ],
     );

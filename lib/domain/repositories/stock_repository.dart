@@ -18,4 +18,7 @@ abstract interface class StockRepository {
 
   /// Списание партии (испортилось / выбросили).
   Future<void> discard(String batchId);
+
+  /// Израсходованные партии (архив с историей).
+  Future<List<StockEntry>> loadUsedUp();
 }

@@ -118,6 +118,10 @@
   "validationName": "Введите название",
   "validationCategory": "Выберите категорию",
 
+  "usedUpTitle": "Использованные",
+  "usedUpEmpty": "Здесь пока пусто",
+  "usedUpLabel": "Израсходовано",
+
   "urgentTitle": "Срочное",
   "urgentEmpty": "Всё под контролем",
   "urgentExpired": "Просрочено",

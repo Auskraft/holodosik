@@ -53,4 +53,28 @@ void main() {
     list = await repo.watchInventory().first;
     expect(list, isEmpty);
   });
+
+  test('полностью израсходованная партия уходит в «Использованные»', () async {
+    final repo = SqfliteStockRepository(
+      StockLocalDataSource(AppDatabase(path: inMemoryDatabasePath)),
+    );
+
+    await repo.addBatch(sampleEntry());
+    await repo.applyUsage(
+      'b1',
+      UsageEvent(
+        id: 'u1',
+        amount: const WeightQuantity(500, QtyUnit.gram),
+        reason: UsageReason.consumed,
+        timestamp: DateTime(2026, 5, 30),
+      ),
+    );
+
+    final active = await repo.watchInventory().first;
+    expect(active, isEmpty);
+
+    final usedUp = await repo.loadUsedUp();
+    expect(usedUp.length, 1);
+    expect(usedUp.first.batch.history.length, 1);
+  });
 }

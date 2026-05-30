@@ -19,6 +19,8 @@ class _FakeStockRepository implements StockRepository {
   Future<void> applyUsage(String batchId, UsageEvent event) async {}
   @override
   Future<void> discard(String batchId) async {}
+  @override
+  Future<List<StockEntry>> loadUsedUp() async => const [];
 }
 
 void main() {
