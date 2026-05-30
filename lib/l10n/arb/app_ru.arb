@@ -1,0 +1,25 @@
+{
+  "@@locale": "ru",
+  "appName": "холодос",
+  "@appName": {
+    "description": "Бренд-логотип приложения, всегда строчными (шрифт Unbounded)"
+  },
+
+  "navInventory": "Запасы",
+  "navUrgent": "Срочное",
+  "navCatalog": "Справочник",
+  "navSettings": "Настройки",
+
+  "settingsTitle": "Настройки",
+  "settingsAppearance": "Оформление",
+  "themeLight": "Светлая",
+  "themeDark": "Тёмная",
+  "themeWarm": "Тёплая",
+
+  "statusFresh": "Свежее",
+  "statusSoon": "Скоро испортится",
+  "statusExpired": "Просрочено",
+  "statusLow": "Заканчивается",
+
+  "actionUse": "Использовать"
+}
