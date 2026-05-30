@@ -7,14 +7,16 @@ class ProductCategory extends Equatable {
     required this.id,
     required this.name,
     required this.iconId,
+    this.sortOrder = 0,
   });
 
   final String id;
   final String name;
   final String iconId;
+  final int sortOrder;
 
   @override
-  List<Object?> get props => [id, name, iconId];
+  List<Object?> get props => [id, name, iconId, sortOrder];
 }
 
 /// Продукт из справочника — «что вообще бывает», а не конкретная партия.

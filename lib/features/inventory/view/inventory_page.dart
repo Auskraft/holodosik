@@ -8,6 +8,7 @@ import '../../../core/theme/context_theme_x.dart';
 import '../../../domain/repositories/stock_repository.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/empty_state.dart';
+import '../../../shared/widgets/search_field.dart';
 import '../bloc/inventory_cubit.dart';
 import '../bloc/inventory_state.dart';
 import '../widgets/inventory_controls.dart';

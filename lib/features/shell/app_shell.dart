@@ -21,17 +21,28 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   int _index = 0;
 
-  static const _pages = [
-    InventoryPage(),
-    UrgentPage(),
-    CatalogPage(),
-    SettingsPage(),
+  // Вкладки строятся при первом открытии и затем сохраняют состояние в стеке.
+  static const _builders = <Widget Function()>[
+    InventoryPage.new,
+    UrgentPage.new,
+    CatalogPage.new,
+    SettingsPage.new,
   ];
+  final List<Widget?> _pages = List.filled(_builders.length, null);
+
+  @override
+  void initState() {
+    super.initState();
+    _pages[_index] = _builders[_index]();
+  }
 
   void _select(int i) {
     if (i == _index) return;
     AppHaptics.light();
-    setState(() => _index = i);
+    setState(() {
+      _index = i;
+      _pages[i] ??= _builders[i]();
+    });
   }
 
   @override
@@ -48,7 +59,12 @@ class _AppShellState extends State<AppShell> {
         setState(() => _index = 0);
       },
       child: Scaffold(
-        body: IndexedStack(index: _index, children: _pages),
+        body: IndexedStack(
+          index: _index,
+          children: [
+            for (final page in _pages) page ?? const SizedBox.shrink(),
+          ],
+        ),
         floatingActionButton: showFab
             ? FloatingActionButton(
                 onPressed: AppHaptics.light,
