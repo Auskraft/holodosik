@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_theme.dart';
-import '../features/shell/app_shell.dart';
 import '../l10n/app_localizations.dart';
+import 'splash_screen.dart';
 import 'theme/theme_cubit.dart';
 
 class HolodosikApp extends StatelessWidget {
@@ -34,7 +34,7 @@ class HolodosikApp extends StatelessWidget {
             ),
             child: AppTheme(id: themeId, colors: colors, child: child!),
           ),
-          home: const AppShell(),
+          home: const SplashScreen(),
         );
       },
     );
