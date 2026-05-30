@@ -117,6 +117,9 @@
 
   "urgentTitle": "Срочное",
   "urgentEmpty": "Всё под контролем",
+  "urgentExpired": "Просрочено",
+  "urgentToday": "Годен сегодня",
+  "urgentUpcoming": "В ближайшие дни",
   "catalogTitle": "Справочник",
   "comingSoon": "Скоро"
 }

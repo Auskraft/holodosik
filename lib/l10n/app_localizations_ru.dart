@@ -271,6 +271,15 @@ class AppL10nRu extends AppL10n {
   String get urgentEmpty => 'Всё под контролем';
 
   @override
+  String get urgentExpired => 'Просрочено';
+
+  @override
+  String get urgentToday => 'Годен сегодня';
+
+  @override
+  String get urgentUpcoming => 'В ближайшие дни';
+
+  @override
   String get catalogTitle => 'Справочник';
 
   @override

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/haptics/app_haptics.dart';
 import '../../core/theme/app_spacing.dart';
@@ -6,6 +7,7 @@ import '../../core/theme/context_theme_x.dart';
 import '../../l10n/app_localizations.dart';
 import '../add_batch/view/add_batch_page.dart';
 import '../catalog/view/catalog_page.dart';
+import '../inventory/bloc/inventory_cubit.dart';
 import '../inventory/view/inventory_page.dart';
 import '../settings/view/settings_page.dart';
 import '../urgent/view/urgent_page.dart';
@@ -98,12 +100,14 @@ class _FloatingNav extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppL10n.of(context);
     final colors = context.colors;
+    final attention =
+        context.watch<InventoryCubit>().state.attentionCount;
 
-    final items = <({IconData icon, String label})>[
-      (icon: Icons.kitchen_outlined, label: l.navInventory),
-      (icon: Icons.local_fire_department_outlined, label: l.navUrgent),
-      (icon: Icons.menu_book_outlined, label: l.navCatalog),
-      (icon: Icons.settings_outlined, label: l.navSettings),
+    final items = <({IconData icon, String label, int badge})>[
+      (icon: Icons.kitchen_outlined, label: l.navInventory, badge: 0),
+      (icon: Icons.local_fire_department_outlined, label: l.navUrgent, badge: attention),
+      (icon: Icons.menu_book_outlined, label: l.navCatalog, badge: 0),
+      (icon: Icons.settings_outlined, label: l.navSettings, badge: 0),
     ];
 
     return SafeArea(
@@ -138,6 +142,7 @@ class _FloatingNav extends StatelessWidget {
                 child: _NavItem(
                   icon: items[i].icon,
                   label: items[i].label,
+                  badge: items[i].badge,
                   selected: i == index,
                   onTap: () => onTap(i),
                 ),
@@ -155,12 +160,14 @@ class _NavItem extends StatelessWidget {
     required this.label,
     required this.selected,
     required this.onTap,
+    this.badge = 0,
   });
 
   final IconData icon;
   final String label;
   final bool selected;
   final VoidCallback onTap;
+  final int badge;
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +182,7 @@ class _NavItem extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 24, color: color),
+            _IconWithBadge(icon: icon, color: color, badge: badge),
             const SizedBox(height: 2),
             Text(
               label,
@@ -189,6 +196,53 @@ class _NavItem extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _IconWithBadge extends StatelessWidget {
+  const _IconWithBadge({
+    required this.icon,
+    required this.color,
+    required this.badge,
+  });
+
+  final IconData icon;
+  final Color color;
+  final int badge;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Icon(icon, size: 24, color: color),
+        if (badge > 0)
+          Positioned(
+            right: -6,
+            top: -4,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+              constraints: const BoxConstraints(minWidth: 16),
+              decoration: BoxDecoration(
+                color: colors.expired,
+                borderRadius: BorderRadius.circular(AppRadius.pill),
+                border: Border.all(color: colors.surface, width: 1.5),
+              ),
+              child: Text(
+                badge > 99 ? '99+' : '$badge',
+                textAlign: TextAlign.center,
+                style: context.textTheme.labelSmall?.copyWith(
+                  color: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                  height: 1.1,
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

@@ -561,6 +561,24 @@ abstract class AppL10n {
   /// **'Всё под контролем'**
   String get urgentEmpty;
 
+  /// No description provided for @urgentExpired.
+  ///
+  /// In ru, this message translates to:
+  /// **'Просрочено'**
+  String get urgentExpired;
+
+  /// No description provided for @urgentToday.
+  ///
+  /// In ru, this message translates to:
+  /// **'Годен сегодня'**
+  String get urgentToday;
+
+  /// No description provided for @urgentUpcoming.
+  ///
+  /// In ru, this message translates to:
+  /// **'В ближайшие дни'**
+  String get urgentUpcoming;
+
   /// No description provided for @catalogTitle.
   ///
   /// In ru, this message translates to:
