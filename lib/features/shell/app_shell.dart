@@ -13,7 +13,7 @@ import '../inventory/view/inventory_page.dart';
 import '../settings/view/settings_page.dart';
 import '../urgent/view/urgent_page.dart';
 
-/// Корневой каркас: 4 вкладки (Запасы / Срочное / Справочник / Настройки)
+/// Корневой каркас: 3 вкладки (Запасы / Срочное / Настройки)
 /// и плавающая кнопка «+» для быстрого добавления.
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
@@ -100,12 +100,15 @@ class _FloatingNav extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppL10n.of(context);
     final colors = context.colors;
-    final attention =
-        context.watch<InventoryCubit>().state.attentionCount;
+    final attention = context.watch<InventoryCubit>().state.attentionCount;
 
     final items = <({IconData icon, String label, int badge})>[
       (icon: Icons.kitchen_outlined, label: l.navInventory, badge: 0),
-      (icon: Icons.local_fire_department_outlined, label: l.navUrgent, badge: attention),
+      (
+        icon: Icons.local_fire_department_outlined,
+        label: l.navUrgent,
+        badge: attention,
+      ),
       (icon: Icons.settings_outlined, label: l.navSettings, badge: 0),
     ];
 
@@ -113,44 +116,49 @@ class _FloatingNav extends StatelessWidget {
       top: false,
       child: Padding(
         padding: const EdgeInsets.only(bottom: AppSpacing.m),
-        child: Center(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(AppRadius.pill),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.s,
-                  vertical: AppSpacing.s,
-                ),
-                decoration: BoxDecoration(
-                  color: colors.surface.withValues(alpha: 0.65),
-                  borderRadius: BorderRadius.circular(AppRadius.pill),
-                  border: Border.all(color: colors.border.withValues(alpha: 0.6)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.10),
-                      blurRadius: 24,
-                      offset: const Offset(0, 8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(AppRadius.pill),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.s,
+                    vertical: AppSpacing.s,
+                  ),
+                  decoration: BoxDecoration(
+                    color: colors.surface.withValues(alpha: 0.65),
+                    borderRadius: BorderRadius.circular(AppRadius.pill),
+                    border: Border.all(
+                      color: colors.border.withValues(alpha: 0.6),
                     ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    for (var i = 0; i < items.length; i++)
-                      _NavItem(
-                        icon: items[i].icon,
-                        label: items[i].label,
-                        badge: items[i].badge,
-                        selected: i == index,
-                        onTap: () => onTap(i),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.10),
+                        blurRadius: 24,
+                        offset: const Offset(0, 8),
                       ),
-                  ],
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      for (var i = 0; i < items.length; i++)
+                        _NavItem(
+                          icon: items[i].icon,
+                          label: items[i].label,
+                          badge: items[i].badge,
+                          selected: i == index,
+                          onTap: () => onTap(i),
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
