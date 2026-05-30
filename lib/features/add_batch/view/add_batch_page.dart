@@ -442,40 +442,52 @@ class _AddBatchPageState extends State<AddBatchPage> {
   Widget _resultsList() {
     final l = AppL10n.of(context);
     final query = _searchCtrl.text.trim();
-    final rows = <Widget>[];
 
     if (query.isEmpty) {
-      // Пустой поиск — показываем только ранее добавленные продукты.
-      if (_recent.isEmpty) {
-        return Center(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.xxl),
-            child: Text(
-              l.searchPromptEmpty,
-              textAlign: TextAlign.center,
-              style: context.textTheme.bodyMedium
-                  ?.copyWith(color: context.colors.textFaint),
-            ),
-          ),
-        );
-      }
-      rows.add(_categoryHeader(l.recentTitle));
-      for (final p in _recent) {
-        rows.add(_resultTile(p));
-      }
-    } else {
-      rows.add(_manualButton(l, query));
-      String? lastCat;
-      for (final p in _search()) {
-        final cat = _categoryById[p.categoryId];
-        if (cat?.id != lastCat) {
-          lastCat = cat?.id;
-          rows.add(_categoryHeader(cat?.name ?? ''));
-        }
-        rows.add(_resultTile(p));
-      }
+      // Пустой поиск — ранее добавленные продукты + маскоты на фоне снизу.
+      final Widget content = _recent.isEmpty
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.xxl),
+                child: Text(
+                  l.searchPromptEmpty,
+                  textAlign: TextAlign.center,
+                  style: context.textTheme.bodyMedium
+                      ?.copyWith(color: context.colors.textFaint),
+                ),
+              ),
+            )
+          : ListView(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.l,
+                0,
+                AppSpacing.l,
+                AppSpacing.giant,
+              ),
+              children: [
+                _categoryHeader(l.recentTitle),
+                for (final p in _recent) _resultTile(p),
+              ],
+            );
+
+      return Stack(
+        children: [
+          const Positioned.fill(child: _AddMascots()),
+          Positioned.fill(child: content),
+        ],
+      );
     }
 
+    final rows = <Widget>[_manualButton(l, query)];
+    String? lastCat;
+    for (final p in _search()) {
+      final cat = _categoryById[p.categoryId];
+      if (cat?.id != lastCat) {
+        lastCat = cat?.id;
+        rows.add(_categoryHeader(cat?.name ?? ''));
+      }
+      rows.add(_resultTile(p));
+    }
     return ListView(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.l,
@@ -832,6 +844,42 @@ class _LocationPicker extends StatelessWidget {
           onPressed: onAddNew,
         ),
       ],
+    );
+  }
+}
+
+/// Маскоты-декор внизу экрана «Новый запас» (при пустом поиске).
+class _AddMascots extends StatelessWidget {
+  const _AddMascots();
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: LayoutBuilder(
+        builder: (context, c) {
+          final w = c.maxWidth;
+          return Stack(
+            children: [
+              Positioned(
+                left: -w * 0.04,
+                bottom: 0,
+                child: Opacity(
+                  opacity: 0.7,
+                  child: Image.asset('assets/images/add_tomato.png', width: w * 0.38),
+                ),
+              ),
+              Positioned(
+                right: -w * 0.04,
+                bottom: 0,
+                child: Opacity(
+                  opacity: 0.7,
+                  child: Image.asset('assets/images/add_pepper.png', width: w * 0.38),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
