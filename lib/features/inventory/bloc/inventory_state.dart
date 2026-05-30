@@ -8,14 +8,14 @@ class InventoryState extends Equatable {
   const InventoryState({
     this.isLoading = true,
     this.all = const [],
-    this.location = LocationFilter.all,
+    this.location = '', // пустая строка — «Все»
     this.query = '',
     this.sort = SortMode.byExpiry,
   });
 
   final bool isLoading;
   final List<StockEntry> all;
-  final LocationFilter location;
+  final String location;
   final String query;
   final SortMode sort;
 
@@ -28,13 +28,22 @@ class InventoryState extends Equatable {
     }).length;
   }
 
+  /// Места для сегментов фильтра: встроенные + используемые пользовательские.
+  List<String> get locations {
+    final result = [...StorageLocations.builtins];
+    for (final e in all) {
+      if (!result.contains(e.location)) result.add(e.location);
+    }
+    return result;
+  }
+
   /// Отфильтрованный и отсортированный список для ленты.
   List<StockEntry> get visible {
     final today = DateTime.now();
     final q = query.trim().toLowerCase();
 
     final filtered = all.where((e) {
-      if (!location.matches(e.location)) return false;
+      if (location.isNotEmpty && e.location != location) return false;
       if (q.isEmpty) return true;
       return e.name.toLowerCase().contains(q) ||
           e.category.name.toLowerCase().contains(q);
@@ -56,7 +65,7 @@ class InventoryState extends Equatable {
   InventoryState copyWith({
     bool? isLoading,
     List<StockEntry>? all,
-    LocationFilter? location,
+    String? location,
     String? query,
     SortMode? sort,
   }) {

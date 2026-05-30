@@ -21,7 +21,7 @@ void main() {
         batch: StockBatch(
           id: 'b1',
           productId: 'p1',
-          location: StorageLocation.fridge,
+          location: StorageLocations.fridge,
           quantity: Quantity(amount: 500, unit: 'г'),
         ),
       );

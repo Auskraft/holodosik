@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'expiry.dart';
 import 'product.dart';
 import 'quantity.dart';
-import 'storage.dart';
 
 /// Причина расхода.
 enum UsageReason { consumed, cooked, discarded, expired, other }
@@ -44,7 +43,7 @@ class StockBatch extends Equatable {
 
   final String id;
   final String productId;
-  final StorageLocation location;
+  final String location;
   final Quantity quantity;
   final DateTime? purchaseDate;
   final DateTime? expiryDate;
@@ -86,7 +85,7 @@ class StockEntry extends Equatable {
   String get id => batch.id;
   String get name => product.name;
   Quantity get quantity => batch.quantity;
-  StorageLocation get location => batch.location;
+  String get location => batch.location;
 
   ExpiryInfo expiryInfo(DateTime today) => resolveExpiry(batch.expiryDate, today);
 

@@ -101,9 +101,9 @@ flutter:
     - family: Onest
       fonts:
         - asset: assets/fonts/Onest.ttf
-    - family: Unbounded
+    - family: MTS Wide
       fonts:
-        - asset: assets/fonts/Unbounded.ttf
+        - asset: assets/fonts/MTSWide.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

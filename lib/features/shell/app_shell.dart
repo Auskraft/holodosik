@@ -10,10 +10,9 @@ import '../../l10n/app_localizations.dart';
 import '../add_batch/view/add_batch_page.dart';
 import '../inventory/bloc/inventory_cubit.dart';
 import '../inventory/view/inventory_page.dart';
-import '../settings/view/settings_page.dart';
 import '../urgent/view/urgent_page.dart';
 
-/// Корневой каркас: 3 вкладки (Запасы / Срочное / Настройки)
+/// Корневой каркас: 2 вкладки (Запасы / Срочное)
 /// и плавающая кнопка «+» для быстрого добавления.
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
@@ -29,7 +28,6 @@ class _AppShellState extends State<AppShell> {
   static const _builders = <Widget Function()>[
     InventoryPage.new,
     UrgentPage.new,
-    SettingsPage.new,
   ];
   final List<Widget?> _pages = List.filled(_builders.length, null);
 
@@ -50,8 +48,6 @@ class _AppShellState extends State<AppShell> {
 
   @override
   Widget build(BuildContext context) {
-    final showFab = _index != 2;
-
     return PopScope(
       // С любой вкладки «назад» сначала возвращает на «Запасы»; выходим из
       // приложения только с первой вкладки.
@@ -68,22 +64,20 @@ class _AppShellState extends State<AppShell> {
             for (final page in _pages) page ?? const SizedBox.shrink(),
           ],
         ),
-        floatingActionButton: showFab
-            ? FloatingActionButton(
-                onPressed: () {
-                  AppHaptics.light();
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const AddBatchPage()),
-                  );
-                },
-                backgroundColor: context.colors.accent,
-                foregroundColor: context.colors.onAccent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.lg),
-                ),
-                child: const Icon(Icons.add),
-              )
-            : null,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            AppHaptics.light();
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const AddBatchPage()),
+            );
+          },
+          backgroundColor: context.colors.accent,
+          foregroundColor: context.colors.onAccent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.lg),
+          ),
+          child: const Icon(Icons.add),
+        ),
         bottomNavigationBar: _FloatingNav(index: _index, onTap: _select),
       ),
     );
@@ -109,7 +103,6 @@ class _FloatingNav extends StatelessWidget {
         label: l.navUrgent,
         badge: attention,
       ),
-      (icon: Icons.settings_outlined, label: l.navSettings, badge: 0),
     ];
 
     return SafeArea(

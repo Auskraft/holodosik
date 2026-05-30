@@ -4,52 +4,40 @@ import '../../../core/haptics/app_haptics.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/context_theme_x.dart';
 import '../../../domain/entities/stock.dart';
-import '../../../domain/entities/storage.dart';
 import '../../../l10n/app_localizations.dart';
 
-/// Сегменты места хранения: Все / Холодильник / Морозилка / Шкаф.
+/// Сегменты места хранения: «Все» + встроенные и пользовательские места.
 class LocationSegments extends StatelessWidget {
   const LocationSegments({
     super.key,
     required this.value,
+    required this.locations,
     required this.onChanged,
   });
 
-  final LocationFilter value;
-  final ValueChanged<LocationFilter> onChanged;
+  /// Текущий выбор: пустая строка — «Все».
+  final String value;
+  final List<String> locations;
+  final ValueChanged<String> onChanged;
 
   @override
   Widget build(BuildContext context) {
     final l = AppL10n.of(context);
-    final colors = context.colors;
-    final labels = {
-      LocationFilter.all: l.locAll,
-      LocationFilter.fridge: l.locFridge,
-      LocationFilter.freezer: l.locFreezer,
-      LocationFilter.pantry: l.locPantry,
-    };
+    final options = ['', ...locations];
 
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.xs),
-      decoration: BoxDecoration(
-        color: colors.surface2,
-        borderRadius: BorderRadius.circular(AppRadius.pill),
-      ),
-      child: Row(
-        children: [
-          for (final f in LocationFilter.values)
-            Expanded(
-              child: _Segment(
-                label: labels[f]!,
-                selected: f == value,
-                onTap: () {
-                  AppHaptics.selection();
-                  onChanged(f);
-                },
-              ),
-            ),
-        ],
-      ),
+    return Wrap(
+      spacing: AppSpacing.s,
+      children: [
+        for (final loc in options)
+          _Segment(
+            label: loc.isEmpty ? l.locAll : loc,
+            selected: loc == value,
+            onTap: () {
+              AppHaptics.selection();
+              onChanged(loc);
+            },
+          ),
+      ],
     );
   }
 }
@@ -74,19 +62,20 @@ class _Segment extends StatelessWidget {
       child: AnimatedContainer(
         duration: AppMotion.fast,
         curve: AppMotion.easing,
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.s),
+        padding: const EdgeInsets.symmetric(
+          vertical: AppSpacing.s,
+          horizontal: AppSpacing.m,
+        ),
         decoration: BoxDecoration(
-          color: selected ? colors.surface : Colors.transparent,
+          color: selected ? colors.accentSoft : colors.surface,
           borderRadius: BorderRadius.circular(AppRadius.pill),
+          border: Border.all(color: colors.border),
         ),
         child: Text(
           label,
-          textAlign: TextAlign.center,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
           style: context.textTheme.bodySmall?.copyWith(
-            color: selected ? colors.text : colors.textMuted,
-            fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+            color: selected ? colors.accentSoftText : colors.textMuted,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),

@@ -4,7 +4,6 @@ import '../../core/database/app_database.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/entities/quantity.dart';
 import '../../domain/entities/stock.dart';
-import '../../domain/entities/storage.dart';
 
 /// Доступ к запасам и журналу (stock_batches, usage_events) с join на продукты
 /// и категории. Сериализация Quantity — в плоские поля.
@@ -44,7 +43,7 @@ class StockLocalDataSource {
       final batch = StockBatch(
         id: r['id'] as String,
         productId: r['product_id'] as String,
-        location: StorageLocation.values.byName(r['location'] as String),
+        location: r['location'] as String,
         quantity: _quantityFromRow(r, 'qty_'),
         purchaseDate: _date(r['purchase_date']),
         expiryDate: _date(r['expiry_date']),
@@ -139,7 +138,7 @@ class StockLocalDataSource {
   Map<String, Object?> _batchColumns(StockBatch b) => {
         'id': b.id,
         'product_id': b.productId,
-        'location': b.location.name,
+        'location': b.location,
         ..._quantityColumns(b.quantity, 'qty_'),
         'purchase_date': b.purchaseDate?.millisecondsSinceEpoch,
         'expiry_date': b.expiryDate?.millisecondsSinceEpoch,

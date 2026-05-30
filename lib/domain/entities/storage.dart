@@ -1,17 +1,9 @@
-/// Место хранения партии.
-enum StorageLocation { fridge, freezer, pantry }
+/// Места хранения — свободные строки (встроенные + пользовательские).
+abstract final class StorageLocations {
+  static const String fridge = 'Холодильник';
+  static const String freezer = 'Морозилка';
+  static const String pantry = 'Шкаф';
 
-/// Фильтр места на главной (включает «Все»).
-enum LocationFilter {
-  all,
-  fridge,
-  freezer,
-  pantry;
-
-  bool matches(StorageLocation loc) => switch (this) {
-        LocationFilter.all => true,
-        LocationFilter.fridge => loc == StorageLocation.fridge,
-        LocationFilter.freezer => loc == StorageLocation.freezer,
-        LocationFilter.pantry => loc == StorageLocation.pantry,
-      };
+  /// Встроенные места, всегда доступны в выборе и фильтре.
+  static const List<String> builtins = [fridge, freezer, pantry];
 }

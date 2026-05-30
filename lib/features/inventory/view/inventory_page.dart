@@ -72,6 +72,7 @@ class _InventoryView extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.l),
                 child: LocationSegments(
                   value: state.location,
+                  locations: state.locations,
                   onChanged: cubit.setLocation,
                 ),
               ),

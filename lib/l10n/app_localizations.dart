@@ -519,6 +519,36 @@ abstract class AppL10n {
   /// **'Начните вводить название продукта'**
   String get searchPromptEmpty;
 
+  /// No description provided for @addLocationChip.
+  ///
+  /// In ru, this message translates to:
+  /// **'Своё место'**
+  String get addLocationChip;
+
+  /// No description provided for @addLocationTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Новое место хранения'**
+  String get addLocationTitle;
+
+  /// No description provided for @addLocationHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Например, Балкон'**
+  String get addLocationHint;
+
+  /// No description provided for @cancel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отмена'**
+  String get cancel;
+
+  /// No description provided for @add.
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить'**
+  String get add;
+
   /// No description provided for @fieldName.
   ///
   /// In ru, this message translates to:

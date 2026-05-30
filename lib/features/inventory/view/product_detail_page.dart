@@ -10,7 +10,6 @@ import '../../../core/icons/ingredient_emoji.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/context_theme_x.dart';
 import '../../../domain/entities/stock.dart';
-import '../../../domain/entities/storage.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../add_batch/view/add_batch_page.dart';
 import '../bloc/inventory_cubit.dart';
@@ -166,11 +165,7 @@ class _MetaRows extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppL10n.of(context);
     final b = entry.batch;
-    final locName = switch (entry.location) {
-      StorageLocation.fridge => l.locFridge,
-      StorageLocation.freezer => l.locFreezer,
-      StorageLocation.pantry => l.locPantry,
-    };
+    final locName = entry.location;
 
     return Column(
       children: [

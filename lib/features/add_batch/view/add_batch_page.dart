@@ -53,7 +53,8 @@ class _AddBatchPageState extends State<AddBatchPage> {
   String _unit = 'шт';
   double _amount = 1;
 
-  StorageLocation _location = StorageLocation.fridge;
+  String _location = StorageLocations.fridge;
+  List<String> _knownLocations = StorageLocations.builtins;
   bool _hasExpiry = false;
   DateTime? _expiryDate;
 
@@ -79,8 +80,10 @@ class _AddBatchPageState extends State<AddBatchPage> {
     // Ранее добавленные: уникальные продукты из активных и использованных партий.
     final seen = <String>{};
     final recent = <Product>[];
+    final locations = [...StorageLocations.builtins];
     for (final e in [...inventory.state.all, ...usedUp]) {
       byId.putIfAbsent(e.category.id, () => e.category);
+      if (!locations.contains(e.location)) locations.add(e.location);
       if (seen.add(e.product.id)) {
         final matched = products.where((p) => p.id == e.product.id).firstOrNull;
         recent.add(matched ?? e.product);
@@ -92,6 +95,7 @@ class _AddBatchPageState extends State<AddBatchPage> {
       _all = products;
       _recent = recent;
       _categoryById = byId;
+      _knownLocations = locations;
       _loading = false;
       if (edit != null) {
         _selected = edit.product;
@@ -234,6 +238,43 @@ class _AddBatchPageState extends State<AddBatchPage> {
         ..showSnackBar(SnackBar(content: Text(l.toastAdded)));
     }
     Navigator.of(context).pop();
+  }
+
+  Future<void> _addLocation() async {
+    final l = AppL10n.of(context);
+    final controller = TextEditingController();
+    final name = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: context.colors.surface,
+        title: Text(l.addLocationTitle),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: InputDecoration(hintText: l.addLocationHint),
+          onSubmitted: (v) => Navigator.pop(ctx, v.trim()),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(l.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, controller.text.trim()),
+            child: Text(l.add),
+          ),
+        ],
+      ),
+    );
+    if (name != null && name.isNotEmpty) {
+      AppHaptics.selection();
+      setState(() {
+        if (!_knownLocations.contains(name)) {
+          _knownLocations = [..._knownLocations, name];
+        }
+        _location = name;
+      });
+    }
   }
 
   Future<void> _pickDate() async {
@@ -446,7 +487,9 @@ class _AddBatchPageState extends State<AddBatchPage> {
         const SizedBox(height: AppSpacing.m),
         _LocationPicker(
           value: _location,
+          locations: _knownLocations,
           onChanged: (loc) => setState(() => _location = loc),
+          onAddNew: _addLocation,
         ),
         const SizedBox(height: AppSpacing.xl),
         SwitchListTile(
@@ -654,27 +697,30 @@ class _SectionTitle extends StatelessWidget {
 }
 
 class _LocationPicker extends StatelessWidget {
-  const _LocationPicker({required this.value, required this.onChanged});
+  const _LocationPicker({
+    required this.value,
+    required this.locations,
+    required this.onChanged,
+    required this.onAddNew,
+  });
 
-  final StorageLocation value;
-  final ValueChanged<StorageLocation> onChanged;
+  final String value;
+  final List<String> locations;
+  final ValueChanged<String> onChanged;
+  final VoidCallback onAddNew;
 
   @override
   Widget build(BuildContext context) {
-    final l = AppL10n.of(context);
     final colors = context.colors;
-    final labels = {
-      StorageLocation.fridge: l.locFridge,
-      StorageLocation.freezer: l.locFreezer,
-      StorageLocation.pantry: l.locPantry,
-    };
+    final options = locations.contains(value) ? locations : [...locations, value];
 
     return Wrap(
       spacing: AppSpacing.s,
+      runSpacing: AppSpacing.s,
       children: [
-        for (final loc in StorageLocation.values)
+        for (final loc in options)
           ChoiceChip(
-            label: Text(labels[loc]!),
+            label: Text(loc),
             selected: loc == value,
             showCheckmark: false,
             backgroundColor: colors.surface,
@@ -689,6 +735,17 @@ class _LocationPicker extends StatelessWidget {
               onChanged(loc);
             },
           ),
+        ActionChip(
+          avatar: Icon(Icons.add, size: 18, color: colors.accent),
+          label: Text(AppL10n.of(context).addLocationChip),
+          backgroundColor: colors.surface,
+          side: BorderSide(color: colors.accent.withValues(alpha: 0.4)),
+          labelStyle: context.textTheme.bodySmall?.copyWith(
+            color: colors.accent,
+            fontWeight: FontWeight.w600,
+          ),
+          onPressed: onAddNew,
+        ),
       ],
     );
   }

@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:holodosik/app/app.dart';
-import 'package:holodosik/app/theme/theme_cubit.dart';
 import 'package:holodosik/domain/entities/stock.dart';
 import 'package:holodosik/domain/repositories/stock_repository.dart';
 import 'package:holodosik/features/inventory/bloc/inventory_cubit.dart';
@@ -27,11 +26,8 @@ void main() {
   testWidgets('Главный экран показывает бренд и пустое состояние запасов',
       (tester) async {
     await tester.pumpWidget(
-      MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (_) => ThemeCubit()),
-          BlocProvider(create: (_) => InventoryCubit(_FakeStockRepository())),
-        ],
+      BlocProvider(
+        create: (_) => InventoryCubit(_FakeStockRepository()),
         child: const HolodosikApp(),
       ),
     );

@@ -252,6 +252,21 @@ class AppL10nRu extends AppL10n {
   String get searchPromptEmpty => 'Начните вводить название продукта';
 
   @override
+  String get addLocationChip => 'Своё место';
+
+  @override
+  String get addLocationTitle => 'Новое место хранения';
+
+  @override
+  String get addLocationHint => 'Например, Балкон';
+
+  @override
+  String get cancel => 'Отмена';
+
+  @override
+  String get add => 'Добавить';
+
+  @override
   String get fieldName => 'Название';
 
   @override

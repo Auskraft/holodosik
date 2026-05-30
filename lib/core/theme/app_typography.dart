@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 /// логотип — Unbounded. Размеры в логических пикселях уважают системный масштаб.
 abstract final class AppTypography {
   static const String fontFamily = 'Onest';
-  static const String brandFamily = 'Unbounded';
+  static const String brandFamily = 'MTS Wide';
 
   // Типошкала (база 16).
   static const double sizeXs = 12;

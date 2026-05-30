@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../domain/entities/stock.dart';
-import '../../../domain/entities/storage.dart';
 import '../../../domain/repositories/stock_repository.dart';
 import 'inventory_state.dart';
 
@@ -17,7 +16,7 @@ class InventoryCubit extends Cubit<InventoryState> {
   final StockRepository _repository;
   late final StreamSubscription<List<StockEntry>> _sub;
 
-  void setLocation(LocationFilter location) =>
+  void setLocation(String location) =>
       emit(state.copyWith(location: location));
 
   void setQuery(String query) => emit(state.copyWith(query: query));
