@@ -96,6 +96,7 @@ flutter:
   assets:
     - assets/icon/
     - assets/data/
+    - assets/images/
 
   fonts:
     - family: Onest

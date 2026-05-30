@@ -6,7 +6,6 @@ import '../../../core/theme/context_theme_x.dart';
 import '../../../domain/entities/expiry.dart';
 import '../../../domain/entities/stock.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../../shared/widgets/empty_state.dart';
 import '../../inventory/bloc/inventory_cubit.dart';
 import '../../inventory/bloc/inventory_state.dart';
 import '../../inventory/view/product_detail_page.dart';
@@ -35,10 +34,7 @@ class UrgentPage extends StatelessWidget {
               builder: (context, state) {
                 final sections = _buildSections(l, state.all);
                 if (sections.isEmpty) {
-                  return EmptyState(
-                    icon: Icons.local_fire_department_outlined,
-                    title: l.urgentEmpty,
-                  );
+                  return const _UrgentEmpty();
                 }
                 return ListView(
                   padding: const EdgeInsets.fromLTRB(
@@ -120,5 +116,69 @@ class UrgentPage extends StatelessWidget {
       if (todayItems.isNotEmpty) (title: l.urgentToday, items: todayItems),
       if (upcoming.isNotEmpty) (title: l.urgentUpcoming, items: upcoming),
     ];
+  }
+}
+
+/// Пустое «Срочное»: маскоты на фоне (80% прозрачности) + спокойное сообщение.
+class _UrgentEmpty extends StatelessWidget {
+  const _UrgentEmpty();
+
+  static const double _opacity = 0.2;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppL10n.of(context);
+    final colors = context.colors;
+
+    return LayoutBuilder(
+      builder: (context, c) {
+        final w = c.maxWidth;
+        final h = c.maxHeight;
+        return Stack(
+          children: [
+            Align(
+              alignment: const Alignment(0, -0.55),
+              child: Opacity(
+                opacity: _opacity,
+                child: Image.asset('assets/images/holodos.png', width: w * 0.5),
+              ),
+            ),
+            Positioned(
+              right: -w * 0.05,
+              top: h * 0.5,
+              child: Opacity(
+                opacity: _opacity,
+                child: Image.asset('assets/images/blueberry.png', width: w * 0.3),
+              ),
+            ),
+            Positioned(
+              left: -w * 0.05,
+              bottom: h * 0.12,
+              child: Opacity(
+                opacity: _opacity,
+                child: Image.asset('assets/images/pepper.png', width: w * 0.3),
+              ),
+            ),
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.local_fire_department_outlined,
+                    size: 40,
+                    color: colors.textFaint,
+                  ),
+                  const SizedBox(height: AppSpacing.m),
+                  Text(
+                    l.urgentEmpty,
+                    style: context.textTheme.titleMedium,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
