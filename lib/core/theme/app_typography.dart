@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-/// Типографика. Размеры в логических пикселях уважают системный масштаб шрифта
-/// (Flutter применяет `textScaler` автоматически). UI-шрифт — Onest,
-/// брендовый логотип — Unbounded.
+/// Типографика. Шрифты бандлятся в assets (офлайн): UI — Onest, брендовый
+/// логотип — Unbounded. Размеры в логических пикселях уважают системный масштаб.
 abstract final class AppTypography {
+  static const String fontFamily = 'Onest';
+  static const String brandFamily = 'Unbounded';
+
   // Типошкала (база 16).
   static const double sizeXs = 12;
   static const double sizeSm = 13;
@@ -16,8 +17,9 @@ abstract final class AppTypography {
   static const double size3xl = 36;
   static const double size4xl = 48;
 
-  /// Брендовый логотип «холодос» — Unbounded, строчными.
-  static TextStyle brand(Color color) => GoogleFonts.unbounded(
+  /// Брендовый логотип «Холодосик» — Unbounded.
+  static TextStyle brand(Color color) => TextStyle(
+        fontFamily: brandFamily,
         fontSize: sizeXl,
         fontWeight: FontWeight.w600,
         height: 1.0,
@@ -25,40 +27,26 @@ abstract final class AppTypography {
       );
 
   static TextTheme textTheme(Color color) {
-    final base = GoogleFonts.onestTextTheme();
-    return base
-        .copyWith(
-          displayLarge: base.displayLarge?.copyWith(
-            fontSize: size4xl,
-            fontWeight: FontWeight.w800,
-            height: 1.05,
-          ),
-          displayMedium: base.displayMedium?.copyWith(
-            fontSize: size3xl,
-            fontWeight: FontWeight.w800,
-            height: 1.1,
-          ),
-          headlineMedium: base.headlineMedium?.copyWith(
-            fontSize: size2xl,
-            fontWeight: FontWeight.w700,
-            height: 1.15,
-          ),
-          titleLarge: base.titleLarge?.copyWith(
-            fontSize: sizeXl,
-            fontWeight: FontWeight.w700,
-          ),
-          titleMedium: base.titleMedium?.copyWith(
-            fontSize: sizeLg,
-            fontWeight: FontWeight.w600,
-          ),
-          bodyLarge: base.bodyLarge?.copyWith(fontSize: sizeBase),
-          bodyMedium: base.bodyMedium?.copyWith(fontSize: sizeMd),
-          bodySmall: base.bodySmall?.copyWith(fontSize: sizeSm),
-          labelSmall: base.labelSmall?.copyWith(
-            fontSize: sizeXs,
-            fontWeight: FontWeight.w500,
-          ),
-        )
-        .apply(bodyColor: color, displayColor: color);
+    TextStyle s(double size, FontWeight weight, [double height = 1.25]) =>
+        TextStyle(
+          fontFamily: fontFamily,
+          fontSize: size,
+          fontWeight: weight,
+          height: height,
+          color: color,
+        );
+
+    return TextTheme(
+      displayLarge: s(size4xl, FontWeight.w800, 1.05),
+      displayMedium: s(size3xl, FontWeight.w800, 1.1),
+      headlineMedium: s(size2xl, FontWeight.w700, 1.15),
+      titleLarge: s(sizeXl, FontWeight.w700),
+      titleMedium: s(sizeLg, FontWeight.w600),
+      bodyLarge: s(sizeBase, FontWeight.w400),
+      bodyMedium: s(sizeMd, FontWeight.w400),
+      bodySmall: s(sizeSm, FontWeight.w400),
+      labelLarge: s(sizeMd, FontWeight.w600),
+      labelSmall: s(sizeXs, FontWeight.w500),
+    );
   }
 }

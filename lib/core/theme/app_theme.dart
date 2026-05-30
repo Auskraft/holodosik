@@ -45,6 +45,7 @@ class AppTheme extends InheritedWidget {
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
+      fontFamily: AppTypography.fontFamily,
       scaffoldBackgroundColor: c.background,
       canvasColor: c.background,
       dividerColor: c.border,
