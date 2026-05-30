@@ -48,7 +48,7 @@ class UrgentPage extends StatelessWidget {
                   ),
                 ),
                 Opacity(
-                  opacity: 0.4,
+                  opacity: 0.2,
                   child: Image.asset('assets/images/tomato.png', width: 60),
                 ),
               ],

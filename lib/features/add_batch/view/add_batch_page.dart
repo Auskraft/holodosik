@@ -864,7 +864,7 @@ class _AddMascots extends StatelessWidget {
                 left: -w * 0.04,
                 bottom: 0,
                 child: Opacity(
-                  opacity: 0.7,
+                  opacity: 0.2,
                   child: Image.asset('assets/images/add_tomato.png', width: w * 0.38),
                 ),
               ),
@@ -872,7 +872,7 @@ class _AddMascots extends StatelessWidget {
                 right: -w * 0.04,
                 bottom: 0,
                 child: Opacity(
-                  opacity: 0.7,
+                  opacity: 0.2,
                   child: Image.asset('assets/images/add_pepper.png', width: w * 0.38),
                 ),
               ),

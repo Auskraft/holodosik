@@ -191,7 +191,7 @@ class _EmptyView extends StatelessWidget {
       builder: (context, c) {
         final w = c.maxWidth;
         final h = c.maxHeight;
-        const opacity = 0.65;
+        const opacity = 0.2;
         return Stack(
           children: [
             Positioned(
@@ -258,7 +258,7 @@ class _StockMascots extends StatelessWidget {
         builder: (context, c) {
           final w = c.maxWidth;
           final h = c.maxHeight;
-          const opacity = 0.5;
+          const opacity = 0.2;
           return Stack(
             children: [
               Positioned(

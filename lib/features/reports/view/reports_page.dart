@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -12,11 +13,12 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/context_theme_x.dart';
 import '../../../domain/entities/expiry.dart';
 import '../../../domain/entities/stock.dart';
+import '../../../domain/entities/storage.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../inventory/bloc/inventory_cubit.dart';
 
 /// «Отчёты»: плашки списков (использованные, просроченные, все, по местам)
-/// с копированием в буфер и выгрузкой в .txt.
+/// с копированием в буфер, шарингом текстом и выгрузкой в .txt.
 class ReportsPage extends StatelessWidget {
   const ReportsPage({super.key});
 
@@ -30,37 +32,74 @@ class ReportsPage extends StatelessWidget {
       appBar: AppBar(title: Text(l.reportsTitle)),
       body: SafeArea(
         top: false,
-        child: FutureBuilder<List<StockEntry>>(
-          future: cubit.loadUsedUp(),
+        child: FutureBuilder<List<Object>>(
+          future: Future.wait([cubit.loadUsedUp(), cubit.loadCustomLocations()]),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator());
             }
-            final usedUp = snapshot.data!;
+            final usedUp = snapshot.data![0] as List<StockEntry>;
+            final custom = snapshot.data![1] as List<String>;
             final today = DateTime.now();
             final expired = active
                 .where((e) => e.expiryInfo(today).status == ExpiryStatus.expired)
                 .toList();
 
+            // Места: встроенные + пользовательские + встречающиеся в запасах.
             final locations = <String>[];
+            for (final loc in [...StorageLocations.builtins, ...custom]) {
+              if (!locations.contains(loc)) locations.add(loc);
+            }
             for (final e in active) {
               if (!locations.contains(e.location)) locations.add(e.location);
             }
 
-            final tiles = <({String title, List<StockEntry> entries})>[
-              (title: l.usedUpTitle, entries: usedUp),
-              (title: l.reportExpired, entries: expired),
-              (title: l.reportCurrentAll, entries: active),
+            final tiles = <({String title, int count, String content})>[
+              (
+                title: l.usedUpTitle,
+                count: usedUp.length,
+                content: ReportBuilder.buildUsed(usedUp),
+              ),
+              (
+                title: l.reportExpired,
+                count: expired.length,
+                content: ReportBuilder.build(expired),
+              ),
+              (
+                title: l.reportCurrentAll,
+                count: active.length,
+                content: ReportBuilder.build(active),
+              ),
               for (final loc in locations)
-                (title: loc, entries: active.where((e) => e.location == loc).toList()),
+                () {
+                  final items = active.where((e) => e.location == loc).toList();
+                  return (
+                    title: loc,
+                    count: items.length,
+                    content: ReportBuilder.build(items),
+                  );
+                }(),
             ];
 
-            return ListView.separated(
+            return ListView(
               padding: const EdgeInsets.all(AppSpacing.l),
-              itemCount: tiles.length,
-              separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.m),
-              itemBuilder: (_, i) =>
-                  _ReportTile(title: tiles[i].title, entries: tiles[i].entries),
+              children: [
+                for (final t in tiles) ...[
+                  _ReportTile(
+                    title: t.title,
+                    count: t.count,
+                    content: t.content,
+                  ),
+                  const SizedBox(height: AppSpacing.m),
+                ],
+                const SizedBox(height: AppSpacing.l),
+                Center(
+                  child: Opacity(
+                    opacity: 0.2,
+                    child: Image.asset('assets/images/pineapple.png', width: 160),
+                  ),
+                ),
+              ],
             );
           },
         ),
@@ -70,44 +109,92 @@ class ReportsPage extends StatelessWidget {
 }
 
 class _ReportTile extends StatelessWidget {
-  const _ReportTile({required this.title, required this.entries});
+  const _ReportTile({
+    required this.title,
+    required this.count,
+    required this.content,
+  });
 
   final String title;
-  final List<StockEntry> entries;
+  final int count;
+  final String content;
 
   Future<void> _copy(BuildContext context) async {
     final l = AppL10n.of(context);
     final messenger = ScaffoldMessenger.of(context);
     AppHaptics.light();
-    await Clipboard.setData(ClipboardData(text: ReportBuilder.build(entries)));
+    await Clipboard.setData(ClipboardData(text: content));
     messenger
       ..clearSnackBars()
       ..showSnackBar(SnackBar(
-        content: Text(entries.isEmpty ? l.reportEmpty : l.reportCopied),
+        content: Text(content.isEmpty ? l.reportEmpty : l.reportCopied),
       ));
   }
 
-  Future<void> _download(BuildContext context) async {
+  Future<void> _shareText() async {
     AppHaptics.light();
-    final text = ReportBuilder.build(entries);
-    final dir = await getTemporaryDirectory();
-    final safe = title.replaceAll(RegExp(r'[\\/:*?"<>|]'), '_');
-    final file = File('${dir.path}/$safe.txt');
-    await file.writeAsString(text);
+    await SharePlus.instance.share(ShareParams(text: content, subject: title));
+  }
+
+  /// Сохраняет .txt в доступную папку приложения и возвращает путь.
+  Future<File> _saveFile() async {
+    final dir = await getExternalStorageDirectory() ??
+        await getApplicationDocumentsDirectory();
+    final file = File('${dir.path}/holodos_list.txt');
+    await file.writeAsString(content);
+    return file;
+  }
+
+  Future<void> _download(BuildContext context) async {
+    final l = AppL10n.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    AppHaptics.light();
+    final file = await _saveFile();
+    messenger
+      ..clearSnackBars()
+      ..showSnackBar(SnackBar(
+        content: Text(l.reportSaved),
+        action: SnackBarAction(
+          label: l.actionOpen,
+          onPressed: () => OpenFilex.open(file.path),
+        ),
+      ));
+  }
+
+  Future<void> _openFile(BuildContext context) async {
+    final l = AppL10n.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    AppHaptics.light();
+    final file = await _saveFile();
+    final result = await OpenFilex.open(file.path);
+    if (result.type != ResultType.done) {
+      messenger
+        ..clearSnackBars()
+        ..showSnackBar(SnackBar(content: Text(l.reportOpenError)));
+    }
+  }
+
+  Future<void> _shareFile() async {
+    AppHaptics.light();
+    final file = await _saveFile();
     await SharePlus.instance.share(
-      ShareParams(files: [XFile(file.path)], text: title),
+      ShareParams(
+        files: [XFile(file.path, mimeType: 'text/plain', name: '$title.txt')],
+        subject: title,
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final l = AppL10n.of(context);
     final colors = context.colors;
     return Container(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.l,
-        AppSpacing.m,
         AppSpacing.s,
-        AppSpacing.m,
+        AppSpacing.xs,
+        AppSpacing.s,
       ),
       decoration: BoxDecoration(
         color: colors.surface,
@@ -116,32 +203,79 @@ class _ReportTile extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: context.textTheme.titleMedium),
-                const SizedBox(height: 2),
-                Text(
-                  '${entries.length}',
-                  style: context.textTheme.bodySmall
-                      ?.copyWith(color: colors.textMuted),
-                ),
-              ],
+          Flexible(
+            child: Text(
+              title,
+              style: context.textTheme.titleMedium,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-          IconButton(
-            tooltip: AppL10n.of(context).reportCopy,
-            icon: Icon(Icons.content_copy_outlined, color: colors.textMuted),
-            onPressed: () => _copy(context),
+          const SizedBox(width: AppSpacing.s),
+          Text(
+            '$count',
+            style: context.textTheme.bodySmall?.copyWith(color: colors.textFaint),
           ),
-          IconButton(
-            tooltip: AppL10n.of(context).reportDownload,
-            icon: Icon(Icons.download_outlined, color: colors.accent),
-            onPressed: () => _download(context),
+          const Spacer(),
+          _CompactIcon(
+            tooltip: l.reportCopy,
+            icon: Icons.content_copy,
+            color: colors.textMuted,
+            onTap: () => _copy(context),
+          ),
+          _CompactIcon(
+            tooltip: l.reportShare,
+            icon: Icons.share,
+            color: colors.textMuted,
+            onTap: _shareText,
+          ),
+          _CompactIcon(
+            tooltip: l.reportDownload,
+            icon: Icons.download,
+            color: colors.accent,
+            onTap: () => _download(context),
+          ),
+          PopupMenuButton<String>(
+            tooltip: '',
+            icon: Icon(Icons.more_vert, color: colors.textMuted),
+            color: colors.surface,
+            onSelected: (v) {
+              if (v == 'open') _openFile(context);
+              if (v == 'share') _shareFile();
+            },
+            itemBuilder: (_) => [
+              PopupMenuItem(value: 'open', child: Text(l.reportOpenFile)),
+              PopupMenuItem(value: 'share', child: Text(l.reportShareFile)),
+            ],
           ),
         ],
       ),
+    );
+  }
+}
+
+class _CompactIcon extends StatelessWidget {
+  const _CompactIcon({
+    required this.tooltip,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  final String tooltip;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      tooltip: tooltip,
+      icon: Icon(icon, color: color, size: 22),
+      visualDensity: VisualDensity.compact,
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+      onPressed: onTap,
     );
   }
 }

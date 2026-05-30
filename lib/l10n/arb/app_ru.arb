@@ -145,7 +145,13 @@
   "reportCopied": "Скопировано в буфер",
   "reportEmpty": "Список пуст",
   "reportCopy": "Копировать",
+  "reportShare": "Поделиться текстом",
   "reportDownload": "Скачать .txt",
+  "reportSaved": "Файл сохранён",
+  "reportOpenFile": "Открыть файл",
+  "reportShareFile": "Поделиться файлом",
+  "reportOpenError": "Не удалось открыть файл",
+  "actionOpen": "Открыть",
 
   "urgentTitle": "Срочное",
   "urgentEmpty": "Всё под контролем",

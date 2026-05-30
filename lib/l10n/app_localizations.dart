@@ -705,11 +705,47 @@ abstract class AppL10n {
   /// **'Копировать'**
   String get reportCopy;
 
+  /// No description provided for @reportShare.
+  ///
+  /// In ru, this message translates to:
+  /// **'Поделиться текстом'**
+  String get reportShare;
+
   /// No description provided for @reportDownload.
   ///
   /// In ru, this message translates to:
   /// **'Скачать .txt'**
   String get reportDownload;
+
+  /// No description provided for @reportSaved.
+  ///
+  /// In ru, this message translates to:
+  /// **'Файл сохранён'**
+  String get reportSaved;
+
+  /// No description provided for @reportOpenFile.
+  ///
+  /// In ru, this message translates to:
+  /// **'Открыть файл'**
+  String get reportOpenFile;
+
+  /// No description provided for @reportShareFile.
+  ///
+  /// In ru, this message translates to:
+  /// **'Поделиться файлом'**
+  String get reportShareFile;
+
+  /// No description provided for @reportOpenError.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось открыть файл'**
+  String get reportOpenError;
+
+  /// No description provided for @actionOpen.
+  ///
+  /// In ru, this message translates to:
+  /// **'Открыть'**
+  String get actionOpen;
 
   /// No description provided for @urgentTitle.
   ///

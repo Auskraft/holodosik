@@ -345,7 +345,25 @@ class AppL10nRu extends AppL10n {
   String get reportCopy => 'Копировать';
 
   @override
+  String get reportShare => 'Поделиться текстом';
+
+  @override
   String get reportDownload => 'Скачать .txt';
+
+  @override
+  String get reportSaved => 'Файл сохранён';
+
+  @override
+  String get reportOpenFile => 'Открыть файл';
+
+  @override
+  String get reportShareFile => 'Поделиться файлом';
+
+  @override
+  String get reportOpenError => 'Не удалось открыть файл';
+
+  @override
+  String get actionOpen => 'Открыть';
 
   @override
   String get urgentTitle => 'Срочное';
