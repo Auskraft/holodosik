@@ -1,8 +1,8 @@
 {
   "@@locale": "ru",
-  "appName": "холодос",
+  "appName": "Холодосик",
   "@appName": {
-    "description": "Бренд-логотип приложения, всегда строчными (шрифт Unbounded)"
+    "description": "Бренд-логотип приложения (шрифт Unbounded)"
   },
 
   "navInventory": "Запасы",
@@ -10,16 +10,65 @@
   "navCatalog": "Справочник",
   "navSettings": "Настройки",
 
+  "inventoryProductsCount": "{count, plural, one{{count} продукт} few{{count} продукта} many{{count} продуктов} other{{count} продукта}}",
+  "@inventoryProductsCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "inventoryAttentionCount": "{count, plural, one{{count} требует внимания} few{{count} требуют внимания} many{{count} требуют внимания} other{{count} требуют внимания}}",
+  "@inventoryAttentionCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "searchHint": "Поиск по названию",
+
+  "locAll": "Все",
+  "locFridge": "Холодильник",
+  "locFreezer": "Морозилка",
+  "locPantry": "Шкаф",
+
+  "sortExpiry": "По сроку",
+  "sortCategory": "По категории",
+  "sortName": "По названию",
+
+  "emptyStockTitle": "Здесь пусто",
+  "emptyStockAction": "Добавьте первый продукт",
+  "emptySearch": "Ничего не нашлось",
+
   "settingsTitle": "Настройки",
   "settingsAppearance": "Оформление",
+  "settingsLanguage": "Язык",
+  "langRu": "Русский",
+
   "themeLight": "Светлая",
   "themeDark": "Тёмная",
   "themeWarm": "Тёплая",
 
   "statusFresh": "Свежее",
-  "statusSoon": "Скоро испортится",
+  "statusSoon": "Скоро",
   "statusExpired": "Просрочено",
   "statusLow": "Заканчивается",
+  "statusNoExpiry": "Без срока",
 
-  "actionUse": "Использовать"
+  "expiryToday": "годен сегодня",
+  "expiryTomorrow": "годен до завтра",
+  "expiryDaysLeft": "ещё {days} дн.",
+  "@expiryDaysLeft": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "expiredDaysAgo": "просрочено на {days} дн.",
+  "@expiredDaysAgo": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+
+  "qtyTotal": "итого {value}",
+  "@qtyTotal": {
+    "placeholders": { "value": { "type": "String" } }
+  },
+
+  "actionUse": "Использовать",
+
+  "urgentTitle": "Срочное",
+  "urgentEmpty": "Всё под контролем",
+  "catalogTitle": "Справочник",
+  "comingSoon": "Скоро"
 }

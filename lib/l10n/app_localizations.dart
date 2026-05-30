@@ -93,10 +93,10 @@ abstract class AppL10n {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[Locale('ru')];
 
-  /// Бренд-логотип приложения, всегда строчными (шрифт Unbounded)
+  /// Бренд-логотип приложения (шрифт Unbounded)
   ///
   /// In ru, this message translates to:
-  /// **'холодос'**
+  /// **'Холодосик'**
   String get appName;
 
   /// No description provided for @navInventory.
@@ -123,6 +123,84 @@ abstract class AppL10n {
   /// **'Настройки'**
   String get navSettings;
 
+  /// No description provided for @inventoryProductsCount.
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{{count} продукт} few{{count} продукта} many{{count} продуктов} other{{count} продукта}}'**
+  String inventoryProductsCount(int count);
+
+  /// No description provided for @inventoryAttentionCount.
+  ///
+  /// In ru, this message translates to:
+  /// **'{count, plural, one{{count} требует внимания} few{{count} требуют внимания} many{{count} требуют внимания} other{{count} требуют внимания}}'**
+  String inventoryAttentionCount(int count);
+
+  /// No description provided for @searchHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Поиск по названию'**
+  String get searchHint;
+
+  /// No description provided for @locAll.
+  ///
+  /// In ru, this message translates to:
+  /// **'Все'**
+  String get locAll;
+
+  /// No description provided for @locFridge.
+  ///
+  /// In ru, this message translates to:
+  /// **'Холодильник'**
+  String get locFridge;
+
+  /// No description provided for @locFreezer.
+  ///
+  /// In ru, this message translates to:
+  /// **'Морозилка'**
+  String get locFreezer;
+
+  /// No description provided for @locPantry.
+  ///
+  /// In ru, this message translates to:
+  /// **'Шкаф'**
+  String get locPantry;
+
+  /// No description provided for @sortExpiry.
+  ///
+  /// In ru, this message translates to:
+  /// **'По сроку'**
+  String get sortExpiry;
+
+  /// No description provided for @sortCategory.
+  ///
+  /// In ru, this message translates to:
+  /// **'По категории'**
+  String get sortCategory;
+
+  /// No description provided for @sortName.
+  ///
+  /// In ru, this message translates to:
+  /// **'По названию'**
+  String get sortName;
+
+  /// No description provided for @emptyStockTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Здесь пусто'**
+  String get emptyStockTitle;
+
+  /// No description provided for @emptyStockAction.
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавьте первый продукт'**
+  String get emptyStockAction;
+
+  /// No description provided for @emptySearch.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ничего не нашлось'**
+  String get emptySearch;
+
   /// No description provided for @settingsTitle.
   ///
   /// In ru, this message translates to:
@@ -134,6 +212,18 @@ abstract class AppL10n {
   /// In ru, this message translates to:
   /// **'Оформление'**
   String get settingsAppearance;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In ru, this message translates to:
+  /// **'Язык'**
+  String get settingsLanguage;
+
+  /// No description provided for @langRu.
+  ///
+  /// In ru, this message translates to:
+  /// **'Русский'**
+  String get langRu;
 
   /// No description provided for @themeLight.
   ///
@@ -162,7 +252,7 @@ abstract class AppL10n {
   /// No description provided for @statusSoon.
   ///
   /// In ru, this message translates to:
-  /// **'Скоро испортится'**
+  /// **'Скоро'**
   String get statusSoon;
 
   /// No description provided for @statusExpired.
@@ -177,11 +267,71 @@ abstract class AppL10n {
   /// **'Заканчивается'**
   String get statusLow;
 
+  /// No description provided for @statusNoExpiry.
+  ///
+  /// In ru, this message translates to:
+  /// **'Без срока'**
+  String get statusNoExpiry;
+
+  /// No description provided for @expiryToday.
+  ///
+  /// In ru, this message translates to:
+  /// **'годен сегодня'**
+  String get expiryToday;
+
+  /// No description provided for @expiryTomorrow.
+  ///
+  /// In ru, this message translates to:
+  /// **'годен до завтра'**
+  String get expiryTomorrow;
+
+  /// No description provided for @expiryDaysLeft.
+  ///
+  /// In ru, this message translates to:
+  /// **'ещё {days} дн.'**
+  String expiryDaysLeft(int days);
+
+  /// No description provided for @expiredDaysAgo.
+  ///
+  /// In ru, this message translates to:
+  /// **'просрочено на {days} дн.'**
+  String expiredDaysAgo(int days);
+
+  /// No description provided for @qtyTotal.
+  ///
+  /// In ru, this message translates to:
+  /// **'итого {value}'**
+  String qtyTotal(String value);
+
   /// No description provided for @actionUse.
   ///
   /// In ru, this message translates to:
   /// **'Использовать'**
   String get actionUse;
+
+  /// No description provided for @urgentTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Срочное'**
+  String get urgentTitle;
+
+  /// No description provided for @urgentEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Всё под контролем'**
+  String get urgentEmpty;
+
+  /// No description provided for @catalogTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Справочник'**
+  String get catalogTitle;
+
+  /// No description provided for @comingSoon.
+  ///
+  /// In ru, this message translates to:
+  /// **'Скоро'**
+  String get comingSoon;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {
