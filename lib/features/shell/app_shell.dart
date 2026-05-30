@@ -1,3 +1,5 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -109,42 +111,46 @@ class _FloatingNav extends StatelessWidget {
 
     return SafeArea(
       top: false,
-      child: Container(
-        margin: const EdgeInsets.fromLTRB(
-          AppSpacing.l,
-          0,
-          AppSpacing.l,
-          AppSpacing.m,
-        ),
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.s,
-          vertical: AppSpacing.s,
-        ),
-        decoration: BoxDecoration(
-          color: colors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.xl),
-          border: Border.all(color: colors.border),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.10),
-              blurRadius: 24,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            for (var i = 0; i < items.length; i++)
-              Expanded(
-                child: _NavItem(
-                  icon: items[i].icon,
-                  label: items[i].label,
-                  badge: items[i].badge,
-                  selected: i == index,
-                  onTap: () => onTap(i),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: AppSpacing.m),
+        child: Center(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(AppRadius.pill),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.s,
+                  vertical: AppSpacing.s,
+                ),
+                decoration: BoxDecoration(
+                  color: colors.surface.withValues(alpha: 0.65),
+                  borderRadius: BorderRadius.circular(AppRadius.pill),
+                  border: Border.all(color: colors.border.withValues(alpha: 0.6)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.10),
+                      blurRadius: 24,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    for (var i = 0; i < items.length; i++)
+                      _NavItem(
+                        icon: items[i].icon,
+                        label: items[i].label,
+                        badge: items[i].badge,
+                        selected: i == index,
+                        onTap: () => onTap(i),
+                      ),
+                  ],
                 ),
               ),
-          ],
+            ),
+          ),
         ),
       ),
     );
@@ -175,7 +181,10 @@ class _NavItem extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+        padding: const EdgeInsets.symmetric(
+          vertical: AppSpacing.xs,
+          horizontal: AppSpacing.l,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
