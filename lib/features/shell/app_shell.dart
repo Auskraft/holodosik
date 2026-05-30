@@ -38,20 +38,30 @@ class _AppShellState extends State<AppShell> {
   Widget build(BuildContext context) {
     final showFab = _index != 3;
 
-    return Scaffold(
-      body: IndexedStack(index: _index, children: _pages),
-      floatingActionButton: showFab
-          ? FloatingActionButton(
-              onPressed: AppHaptics.light,
-              backgroundColor: context.colors.accent,
-              foregroundColor: context.colors.onAccent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppRadius.lg),
-              ),
-              child: const Icon(Icons.add),
-            )
-          : null,
-      bottomNavigationBar: _FloatingNav(index: _index, onTap: _select),
+    return PopScope(
+      // С любой вкладки «назад» сначала возвращает на «Запасы»; выходим из
+      // приложения только с первой вкладки.
+      canPop: _index == 0,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        AppHaptics.light();
+        setState(() => _index = 0);
+      },
+      child: Scaffold(
+        body: IndexedStack(index: _index, children: _pages),
+        floatingActionButton: showFab
+            ? FloatingActionButton(
+                onPressed: AppHaptics.light,
+                backgroundColor: context.colors.accent,
+                foregroundColor: context.colors.onAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.lg),
+                ),
+                child: const Icon(Icons.add),
+              )
+            : null,
+        bottomNavigationBar: _FloatingNav(index: _index, onTap: _select),
+      ),
     );
   }
 }
