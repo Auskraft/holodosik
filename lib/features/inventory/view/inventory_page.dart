@@ -190,7 +190,7 @@ class _EmptyView extends StatelessWidget {
               ),
             ),
             Align(
-              alignment: const Alignment(-0.95, -0.62),
+              alignment: const Alignment(-0.95, -0.82),
               child: Opacity(
                 opacity: opacity,
                 child: Image.asset('assets/images/add_pepper.png', width: w * 0.33),
