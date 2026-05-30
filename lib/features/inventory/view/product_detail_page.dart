@@ -12,6 +12,7 @@ import '../../../core/theme/context_theme_x.dart';
 import '../../../domain/entities/stock.dart';
 import '../../../domain/entities/storage.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../add_batch/view/add_batch_page.dart';
 import '../bloc/inventory_cubit.dart';
 import '../bloc/inventory_state.dart';
 import '../widgets/status_badge.dart';
@@ -57,10 +58,12 @@ class ProductDetailPage extends StatelessWidget {
                 Text(l.detailHistory, style: context.textTheme.titleMedium),
                 const SizedBox(height: AppSpacing.s),
                 _History(history: entry.batch.history),
+                const SizedBox(height: AppSpacing.xl),
+                _SecondaryActions(entry: entry),
               ],
             ),
           ),
-          bottomNavigationBar: _Actions(entry: entry),
+          bottomNavigationBar: _UseBar(entry: entry),
         );
       },
     );
@@ -264,8 +267,114 @@ class _History extends StatelessWidget {
   }
 }
 
-class _Actions extends StatelessWidget {
-  const _Actions({required this.entry});
+class _SecondaryActions extends StatelessWidget {
+  const _SecondaryActions({required this.entry});
+  final StockEntry entry;
+
+  void _openForm(BuildContext context, {required bool edit}) {
+    AppHaptics.light();
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => edit
+            ? AddBatchPage(editEntry: entry)
+            : AddBatchPage(
+                initialProduct: entry.product,
+                initialCategory: entry.category,
+              ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppL10n.of(context);
+    final colors = context.colors;
+
+    return Row(
+      children: [
+        Expanded(
+          child: _SecondaryButton(
+            icon: Icons.add,
+            label: l.actionAddBatch,
+            onTap: () => _openForm(context, edit: false),
+          ),
+        ),
+        const SizedBox(width: AppSpacing.s),
+        Expanded(
+          child: _SecondaryButton(
+            icon: Icons.edit_outlined,
+            label: l.actionEdit,
+            onTap: () => _openForm(context, edit: true),
+          ),
+        ),
+        const SizedBox(width: AppSpacing.s),
+        Expanded(
+          child: _SecondaryButton(
+            icon: Icons.delete_outline,
+            label: l.actionDiscard,
+            color: colors.expiredText,
+            onTap: () {
+              AppHaptics.warning();
+              context.read<InventoryCubit>().discard(entry.id);
+              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context)
+                ..clearSnackBars()
+                ..showSnackBar(SnackBar(content: Text(l.toastDiscarded)));
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SecondaryButton extends StatelessWidget {
+  const _SecondaryButton({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.color,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final fg = color ?? colors.text;
+    return OutlinedButton(
+      onPressed: onTap,
+      style: OutlinedButton.styleFrom(
+        foregroundColor: fg,
+        side: BorderSide(color: colors.border),
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.m),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 20, color: fg),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: context.textTheme.labelSmall?.copyWith(color: fg),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _UseBar extends StatelessWidget {
+  const _UseBar({required this.entry});
   final StockEntry entry;
 
   @override
@@ -275,49 +384,23 @@ class _Actions extends StatelessWidget {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.l),
-        child: Row(
-          children: [
-            Expanded(
-              child: FilledButton(
-                onPressed: () {
-                  AppHaptics.light();
-                  showUseSheet(context, entry);
-                },
-                style: FilledButton.styleFrom(
-                  backgroundColor: colors.accent,
-                  foregroundColor: colors.onAccent,
-                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.m),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppRadius.pill),
-                  ),
-                ),
-                child: Text(l.actionUse),
+        child: SizedBox(
+          width: double.infinity,
+          child: FilledButton(
+            onPressed: () {
+              AppHaptics.light();
+              showUseSheet(context, entry);
+            },
+            style: FilledButton.styleFrom(
+              backgroundColor: colors.accent,
+              foregroundColor: colors.onAccent,
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.m),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppRadius.pill),
               ),
             ),
-            const SizedBox(width: AppSpacing.m),
-            OutlinedButton(
-              onPressed: () {
-                AppHaptics.warning();
-                context.read<InventoryCubit>().discard(entry.id);
-                Navigator.of(context).pop();
-                ScaffoldMessenger.of(context)
-                  ..clearSnackBars()
-                  ..showSnackBar(SnackBar(content: Text(l.toastDiscarded)));
-              },
-              style: OutlinedButton.styleFrom(
-                foregroundColor: colors.expiredText,
-                side: BorderSide(color: colors.border),
-                padding: const EdgeInsets.symmetric(
-                  vertical: AppSpacing.m,
-                  horizontal: AppSpacing.l,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.pill),
-                ),
-              ),
-              child: Text(l.actionDiscard),
-            ),
-          ],
+            child: Text(l.actionUse),
+          ),
         ),
       ),
     );

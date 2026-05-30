@@ -26,6 +26,12 @@ class SqfliteStockRepository implements StockRepository {
   }
 
   @override
+  Future<void> updateBatch(StockEntry entry) async {
+    await _dataSource.updateEntry(entry);
+    await _emit();
+  }
+
+  @override
   Future<void> applyUsage(String batchId, UsageEvent event) async {
     final entries = await _dataSource.loadEntries();
     final entry = entries.where((e) => e.id == batchId).firstOrNull;

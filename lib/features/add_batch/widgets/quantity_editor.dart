@@ -27,6 +27,20 @@ class QuantityDraft {
   final double perPack;
   final QtyUnit unit;
 
+  /// Восстанавливает черновик из существующего количества (режим редактирования).
+  factory QuantityDraft.fromQuantity(Quantity q) => switch (q) {
+        CountQuantity(:final count, :final unit) =>
+          QuantityDraft(mode: QtyMode.count, count: count, unit: unit),
+        WeightQuantity(:final amount, :final unit) =>
+          QuantityDraft(mode: QtyMode.weight, amount: amount, unit: unit),
+        PacksQuantity(:final packs, :final perPack, :final unit) => QuantityDraft(
+            mode: QtyMode.packs,
+            packs: packs,
+            perPack: perPack,
+            unit: unit,
+          ),
+      };
+
   QuantityDraft copyWith({
     QtyMode? mode,
     int? count,

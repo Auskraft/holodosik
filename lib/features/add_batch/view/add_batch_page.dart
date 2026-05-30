@@ -18,10 +18,18 @@ import '../widgets/quantity_editor.dart';
 /// Форма добавления запаса. Открывается с FAB (пусто) или из справочника
 /// (с предзаполненным продуктом и категорией).
 class AddBatchPage extends StatefulWidget {
-  const AddBatchPage({super.key, this.initialProduct, this.initialCategory});
+  const AddBatchPage({
+    super.key,
+    this.initialProduct,
+    this.initialCategory,
+    this.editEntry,
+  });
 
   final Product? initialProduct;
   final ProductCategory? initialCategory;
+
+  /// Если задан — форма работает в режиме редактирования партии.
+  final StockEntry? editEntry;
 
   @override
   State<AddBatchPage> createState() => _AddBatchPageState();
@@ -37,11 +45,23 @@ class _AddBatchPageState extends State<AddBatchPage> {
   List<ProductCategory> _categories = const [];
   ProductCategory? _category;
 
+  bool get _isEditing => widget.editEntry != null;
+
   @override
   void initState() {
     super.initState();
-    _nameController.text = widget.initialProduct?.name ?? '';
-    _category = widget.initialCategory;
+    final edit = widget.editEntry;
+    if (edit != null) {
+      _nameController.text = edit.name;
+      _draft = QuantityDraft.fromQuantity(edit.quantity);
+      _location = edit.location;
+      _category = edit.category;
+      _hasExpiry = edit.batch.expiryDate != null;
+      _expiryDate = edit.batch.expiryDate;
+    } else {
+      _nameController.text = widget.initialProduct?.name ?? '';
+      _category = widget.initialCategory;
+    }
     _loadCategories();
   }
 
@@ -75,30 +95,55 @@ class _AddBatchPageState extends State<AddBatchPage> {
     if (name.isEmpty || _category == null || !_draft.isValid) return;
 
     AppHaptics.success();
-    final ts = DateTime.now().microsecondsSinceEpoch;
-    final product = Product(
-      id: widget.initialProduct?.id ?? 'manual_$ts',
-      name: name,
-      categoryId: _category!.id,
-    );
-    final entry = StockEntry(
-      product: product,
-      category: _category!,
-      batch: StockBatch(
-        id: 'batch_$ts',
-        productId: product.id,
-        location: _location,
-        quantity: _draft.build(),
-        purchaseDate: DateTime.now(),
-        expiryDate: _hasExpiry ? _expiryDate : null,
-      ),
-    );
+    final cubit = context.read<InventoryCubit>();
+    final messenger = ScaffoldMessenger.of(context);
+    final edit = widget.editEntry;
 
-    context.read<InventoryCubit>().addBatch(entry);
+    if (edit != null) {
+      final entry = StockEntry(
+        product: Product(id: edit.product.id, name: name, categoryId: _category!.id),
+        category: _category!,
+        batch: StockBatch(
+          id: edit.batch.id,
+          productId: edit.product.id,
+          location: _location,
+          quantity: _draft.build(),
+          purchaseDate: edit.batch.purchaseDate,
+          expiryDate: _hasExpiry ? _expiryDate : null,
+          openedDate: edit.batch.openedDate,
+          note: edit.batch.note,
+          history: edit.batch.history,
+        ),
+      );
+      cubit.updateBatch(entry);
+      messenger
+        ..clearSnackBars()
+        ..showSnackBar(SnackBar(content: Text(l.toastSaved)));
+    } else {
+      final ts = DateTime.now().microsecondsSinceEpoch;
+      final product = Product(
+        id: widget.initialProduct?.id ?? 'manual_$ts',
+        name: name,
+        categoryId: _category!.id,
+      );
+      final entry = StockEntry(
+        product: product,
+        category: _category!,
+        batch: StockBatch(
+          id: 'batch_$ts',
+          productId: product.id,
+          location: _location,
+          quantity: _draft.build(),
+          purchaseDate: DateTime.now(),
+          expiryDate: _hasExpiry ? _expiryDate : null,
+        ),
+      );
+      cubit.addBatch(entry);
+      messenger
+        ..clearSnackBars()
+        ..showSnackBar(SnackBar(content: Text(l.toastAdded)));
+    }
     Navigator.of(context).pop();
-    ScaffoldMessenger.of(context)
-      ..clearSnackBars()
-      ..showSnackBar(SnackBar(content: Text(l.toastAdded)));
   }
 
   Future<void> _pickDate() async {
@@ -118,7 +163,7 @@ class _AddBatchPageState extends State<AddBatchPage> {
     final colors = context.colors;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l.addTitle)),
+      appBar: AppBar(title: Text(_isEditing ? l.editTitle : l.addTitle)),
       body: SafeArea(
         top: false,
         child: ListView(
@@ -203,7 +248,7 @@ class _AddBatchPageState extends State<AddBatchPage> {
                 borderRadius: BorderRadius.circular(AppRadius.pill),
               ),
             ),
-            child: Text(l.saveAdd),
+            child: Text(_isEditing ? l.saveEdit : l.saveAdd),
           ),
         ),
       ),

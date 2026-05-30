@@ -33,6 +33,8 @@ class InventoryCubit extends Cubit<InventoryState> {
 
   Future<void> addBatch(StockEntry entry) => _repository.addBatch(entry);
 
+  Future<void> updateBatch(StockEntry entry) => _repository.updateBatch(entry);
+
   Future<void> use(String batchId, UsageEvent event) =>
       _repository.applyUsage(batchId, event);
 

@@ -73,6 +73,25 @@ class StockLocalDataSource {
     });
   }
 
+  Future<void> updateEntry(StockEntry entry) async {
+    final db = await _db.database;
+    await db.transaction((txn) async {
+      await txn.update(
+        'products',
+        {'name': entry.product.name, 'category_id': entry.product.categoryId},
+        where: 'id = ?',
+        whereArgs: [entry.product.id],
+      );
+      final cols = _batchColumns(entry.batch)..remove('id')..remove('product_id');
+      await txn.update(
+        'stock_batches',
+        cols,
+        where: 'id = ?',
+        whereArgs: [entry.batch.id],
+      );
+    });
+  }
+
   Future<void> updateQuantity(String batchId, Quantity quantity) async {
     final db = await _db.database;
     await db.update(

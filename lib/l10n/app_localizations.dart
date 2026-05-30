@@ -459,6 +459,24 @@ abstract class AppL10n {
   /// **'Новый запас'**
   String get addTitle;
 
+  /// No description provided for @editTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Изменить запас'**
+  String get editTitle;
+
+  /// No description provided for @saveEdit.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сохранить'**
+  String get saveEdit;
+
+  /// No description provided for @toastSaved.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сохранено'**
+  String get toastSaved;
+
   /// No description provided for @fieldName.
   ///
   /// In ru, this message translates to:

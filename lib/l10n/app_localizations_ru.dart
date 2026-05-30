@@ -220,6 +220,15 @@ class AppL10nRu extends AppL10n {
   String get addTitle => 'Новый запас';
 
   @override
+  String get editTitle => 'Изменить запас';
+
+  @override
+  String get saveEdit => 'Сохранить';
+
+  @override
+  String get toastSaved => 'Сохранено';
+
+  @override
   String get fieldName => 'Название';
 
   @override

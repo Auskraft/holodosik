@@ -14,6 +14,8 @@ class _FakeStockRepository implements StockRepository {
   @override
   Future<void> addBatch(StockEntry entry) async {}
   @override
+  Future<void> updateBatch(StockEntry entry) async {}
+  @override
   Future<void> applyUsage(String batchId, UsageEvent event) async {}
   @override
   Future<void> discard(String batchId) async {}

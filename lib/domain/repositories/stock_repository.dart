@@ -9,6 +9,9 @@ abstract interface class StockRepository {
   /// Добавляет новую партию в запасы.
   Future<void> addBatch(StockEntry entry);
 
+  /// Обновляет существующую партию (редактирование).
+  Future<void> updateBatch(StockEntry entry);
+
   /// Расход: уменьшает остаток партии и пишет запись в журнал. Пустая партия
   /// уходит из активного списка.
   Future<void> applyUsage(String batchId, UsageEvent event);

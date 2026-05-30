@@ -99,6 +99,9 @@
   "toastAdded": "Добавлено в запасы",
 
   "addTitle": "Новый запас",
+  "editTitle": "Изменить запас",
+  "saveEdit": "Сохранить",
+  "toastSaved": "Сохранено",
   "fieldName": "Название",
   "fieldNameHint": "Например, Молоко",
   "qtyModeTitle": "Как считаем количество",
