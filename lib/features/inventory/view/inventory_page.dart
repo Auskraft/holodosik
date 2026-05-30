@@ -164,10 +164,56 @@ class _EmptyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppL10n.of(context);
-    return EmptyState(
-      icon: hasQuery ? Icons.search_off : Icons.kitchen_outlined,
-      title: hasQuery ? l.emptySearch : l.emptyStockTitle,
-      hint: hasQuery ? null : l.emptyStockAction,
+
+    // При поиске без результатов — простое состояние, без маскотов.
+    if (hasQuery) {
+      return EmptyState(icon: Icons.search_off, title: l.emptySearch);
+    }
+
+    return LayoutBuilder(
+      builder: (context, c) {
+        final w = c.maxWidth;
+        final h = c.maxHeight;
+        const opacity = 0.65;
+        return Stack(
+          children: [
+            Align(
+              alignment: const Alignment(-0.35, 0.0),
+              child: Opacity(
+                opacity: opacity,
+                child: Image.asset('assets/images/add_pepper.png', width: w * 0.5),
+              ),
+            ),
+            Positioned(
+              right: -w * 0.04,
+              top: h * 0.08,
+              child: Opacity(
+                opacity: opacity,
+                child: Image.asset(
+                  'assets/images/empty_blueberry.png',
+                  width: w * 0.3,
+                ),
+              ),
+            ),
+            Positioned(
+              left: -w * 0.05,
+              bottom: h * 0.04,
+              child: Opacity(
+                opacity: opacity,
+                child: Image.asset(
+                  'assets/images/empty_holodos.png',
+                  width: w * 0.34,
+                ),
+              ),
+            ),
+            EmptyState(
+              icon: Icons.kitchen_outlined,
+              title: l.emptyStockTitle,
+              hint: l.emptyStockAction,
+            ),
+          ],
+        );
+      },
     );
   }
 }
