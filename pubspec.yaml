@@ -68,7 +68,7 @@ flutter_native_splash:
   ios: false
   android_12:
     color: "#F9A826"
-    image: assets/icon/icon.png
+    image: assets/icon/blank.png
     icon_background_color: "#F9A826"
 
 # Иконка приложения.
