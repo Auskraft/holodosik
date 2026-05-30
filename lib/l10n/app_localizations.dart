@@ -669,6 +669,30 @@ abstract class AppL10n {
   /// **'Израсходовано'**
   String get usedUpLabel;
 
+  /// No description provided for @usedUpClear.
+  ///
+  /// In ru, this message translates to:
+  /// **'Очистить'**
+  String get usedUpClear;
+
+  /// No description provided for @usedUpClearTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Очистить историю?'**
+  String get usedUpClearTitle;
+
+  /// No description provided for @usedUpClearMessage.
+  ///
+  /// In ru, this message translates to:
+  /// **'Все записи об использованных будут удалены безвозвратно.'**
+  String get usedUpClearMessage;
+
+  /// No description provided for @usedUpCleared.
+  ///
+  /// In ru, this message translates to:
+  /// **'История очищена'**
+  String get usedUpCleared;
+
   /// No description provided for @reportsTitle.
   ///
   /// In ru, this message translates to:

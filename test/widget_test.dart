@@ -21,6 +21,8 @@ class _FakeStockRepository implements StockRepository {
   @override
   Future<List<StockEntry>> loadUsedUp() async => const [];
   @override
+  Future<void> clearUsedUp() async {}
+  @override
   Future<List<String>> loadCustomLocations() async => const [];
   @override
   Future<void> addLocation(String name) async {}

@@ -327,6 +327,19 @@ class AppL10nRu extends AppL10n {
   String get usedUpLabel => 'Израсходовано';
 
   @override
+  String get usedUpClear => 'Очистить';
+
+  @override
+  String get usedUpClearTitle => 'Очистить историю?';
+
+  @override
+  String get usedUpClearMessage =>
+      'Все записи об использованных будут удалены безвозвратно.';
+
+  @override
+  String get usedUpCleared => 'История очищена';
+
+  @override
   String get reportsTitle => 'Отчёты';
 
   @override

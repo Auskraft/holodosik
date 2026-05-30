@@ -90,7 +90,7 @@ class ReportsPage extends StatelessWidget {
                     count: t.count,
                     content: t.content,
                   ),
-                  const SizedBox(height: AppSpacing.m),
+                  const SizedBox(height: AppSpacing.s),
                 ],
                 const SizedBox(height: AppSpacing.l),
                 Center(
@@ -129,11 +129,6 @@ class _ReportTile extends StatelessWidget {
       ..showSnackBar(SnackBar(
         content: Text(content.isEmpty ? l.reportEmpty : l.reportCopied),
       ));
-  }
-
-  Future<void> _shareText() async {
-    AppHaptics.light();
-    await SharePlus.instance.share(ShareParams(text: content, subject: title));
   }
 
   /// Сохраняет .txt в доступную папку приложения и возвращает путь.
@@ -203,31 +198,41 @@ class _ReportTile extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Flexible(
+          Expanded(
             child: Text(
               title,
-              style: context.textTheme.titleMedium,
+              style: context.textTheme.titleMedium?.copyWith(
+                fontSize: (context.textTheme.titleMedium?.fontSize ?? 16) - 4,
+              ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          const SizedBox(width: AppSpacing.s),
-          Text(
-            '$count',
-            style: context.textTheme.bodySmall?.copyWith(color: colors.textFaint),
+          const SizedBox(width: AppSpacing.xs),
+          Container(
+            constraints: const BoxConstraints(minWidth: 22),
+            height: 22,
+            padding: const EdgeInsets.symmetric(horizontal: 7),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: count > 0 ? colors.accentSoft : colors.surface2,
+              borderRadius: BorderRadius.circular(AppRadius.pill),
+            ),
+            child: Text(
+              '$count',
+              style: context.textTheme.labelSmall?.copyWith(
+                color: count > 0 ? colors.accentSoftText : colors.textFaint,
+                fontWeight: FontWeight.w700,
+                height: 1,
+              ),
+            ),
           ),
-          const Spacer(),
+          const SizedBox(width: AppSpacing.s),
           _CompactIcon(
             tooltip: l.reportCopy,
             icon: Icons.content_copy,
             color: colors.textMuted,
             onTap: () => _copy(context),
-          ),
-          _CompactIcon(
-            tooltip: l.reportShare,
-            icon: Icons.share,
-            color: colors.textMuted,
-            onTap: _shareText,
           ),
           _CompactIcon(
             tooltip: l.reportDownload,
@@ -237,8 +242,8 @@ class _ReportTile extends StatelessWidget {
           ),
           PopupMenuButton<String>(
             tooltip: '',
-            icon: Icon(Icons.more_vert, color: colors.textMuted),
             color: colors.surface,
+            padding: EdgeInsets.zero,
             onSelected: (v) {
               if (v == 'open') _openFile(context);
               if (v == 'share') _shareFile();
@@ -247,6 +252,11 @@ class _ReportTile extends StatelessWidget {
               PopupMenuItem(value: 'open', child: Text(l.reportOpenFile)),
               PopupMenuItem(value: 'share', child: Text(l.reportShareFile)),
             ],
+            child: SizedBox(
+              width: 32,
+              height: 32,
+              child: Icon(Icons.more_vert, color: colors.textMuted, size: 22),
+            ),
           ),
         ],
       ),
@@ -272,10 +282,12 @@ class _CompactIcon extends StatelessWidget {
     return IconButton(
       tooltip: tooltip,
       icon: Icon(icon, color: color, size: 22),
-      visualDensity: VisualDensity.compact,
-      padding: EdgeInsets.zero,
-      constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
       onPressed: onTap,
+      style: IconButton.styleFrom(
+        padding: EdgeInsets.zero,
+        minimumSize: const Size(32, 32),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
     );
   }
 }

@@ -138,6 +138,10 @@
   "usedUpTitle": "Использованные",
   "usedUpEmpty": "Здесь пока пусто",
   "usedUpLabel": "Израсходовано",
+  "usedUpClear": "Очистить",
+  "usedUpClearTitle": "Очистить историю?",
+  "usedUpClearMessage": "Все записи об использованных будут удалены безвозвратно.",
+  "usedUpCleared": "История очищена",
 
   "reportsTitle": "Отчёты",
   "reportExpired": "Просроченные",

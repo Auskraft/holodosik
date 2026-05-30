@@ -167,6 +167,21 @@ class StockLocalDataSource {
     });
   }
 
+  /// Удаляет весь архив израсходованных партий вместе с их журналом.
+  Future<void> clearUsedUp() async {
+    final db = await _db.database;
+    await db.transaction((txn) async {
+      final used = await txn.query('stock_batches',
+          columns: ['id'], where: 'used_up = ?', whereArgs: [1]);
+      final ids = [for (final r in used) r['id'] as String];
+      if (ids.isEmpty) return;
+      final marks = List.filled(ids.length, '?').join(',');
+      await txn.delete('usage_events',
+          where: 'batch_id IN ($marks)', whereArgs: ids);
+      await txn.delete('stock_batches', where: 'used_up = ?', whereArgs: [1]);
+    });
+  }
+
   Future<void> deleteBatch(String batchId) async {
     final db = await _db.database;
     await db.transaction((txn) async {

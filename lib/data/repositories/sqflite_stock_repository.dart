@@ -54,6 +54,9 @@ class SqfliteStockRepository implements StockRepository {
   Future<List<StockEntry>> loadUsedUp() => _dataSource.loadEntries(usedUp: true);
 
   @override
+  Future<void> clearUsedUp() => _dataSource.clearUsedUp();
+
+  @override
   Future<List<String>> loadCustomLocations() => _dataSource.loadCustomLocations();
 
   @override

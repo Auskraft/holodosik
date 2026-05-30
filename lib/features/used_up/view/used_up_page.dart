@@ -11,35 +11,143 @@ import '../../../shared/widgets/empty_state.dart';
 import '../../inventory/bloc/inventory_cubit.dart';
 
 /// «Использованные» — архив израсходованных партий с сохранённой историей.
-class UsedUpPage extends StatelessWidget {
+class UsedUpPage extends StatefulWidget {
   const UsedUpPage({super.key});
+
+  @override
+  State<UsedUpPage> createState() => _UsedUpPageState();
+}
+
+class _UsedUpPageState extends State<UsedUpPage> {
+  late Future<List<StockEntry>> _future;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = context.read<InventoryCubit>().loadUsedUp();
+  }
+
+  Future<void> _clear() async {
+    final l = AppL10n.of(context);
+    final cubit = context.read<InventoryCubit>();
+    final messenger = ScaffoldMessenger.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.usedUpClearTitle),
+        content: Text(l.usedUpClearMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l.usedUpClear),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    await cubit.clearUsedUp();
+    if (!mounted) return;
+    setState(() => _future = cubit.loadUsedUp());
+    messenger
+      ..clearSnackBars()
+      ..showSnackBar(SnackBar(content: Text(l.usedUpCleared)));
+  }
 
   @override
   Widget build(BuildContext context) {
     final l = AppL10n.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l.usedUpTitle)),
+      appBar: AppBar(
+        title: Text(l.usedUpTitle),
+        actions: [
+          FutureBuilder<List<StockEntry>>(
+            future: _future,
+            builder: (context, snapshot) {
+              if (!(snapshot.data?.isNotEmpty ?? false)) {
+                return const SizedBox.shrink();
+              }
+              return Padding(
+                padding: const EdgeInsets.only(right: AppSpacing.s),
+                child: IconButton(
+                  tooltip: l.usedUpClear,
+                  icon: Icon(
+                    Icons.cleaning_services,
+                    color: context.colors.textMuted,
+                  ),
+                  onPressed: _clear,
+                ),
+              );
+            },
+          ),
+        ],
+      ),
       body: SafeArea(
         top: false,
         child: FutureBuilder<List<StockEntry>>(
-          future: context.read<InventoryCubit>().loadUsedUp(),
+          future: _future,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator());
             }
             final items = snapshot.data!;
             if (items.isEmpty) {
-              return EmptyState(
-                icon: Icons.history,
-                title: l.usedUpEmpty,
+              return Stack(
+                children: [
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 50),
+                          child: Opacity(
+                            opacity: 0.2,
+                            child: Image.asset(
+                              'assets/images/turtle.png',
+                              width: MediaQuery.sizeOf(context).width * 0.72,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  EmptyState(
+                    icon: Icons.history,
+                    title: l.usedUpEmpty,
+                  ),
+                ],
               );
             }
-            return ListView.separated(
-              padding: const EdgeInsets.all(AppSpacing.l),
-              itemCount: items.length,
-              separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.s),
-              itemBuilder: (_, i) => _UsedUpRow(items[i]),
+            return Stack(
+              children: [
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 40),
+                        child: Opacity(
+                          opacity: 0.2,
+                          child: Image.asset(
+                            'assets/images/dragon.png',
+                            width: MediaQuery.sizeOf(context).width * 0.675,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                ListView.separated(
+                  padding: const EdgeInsets.all(AppSpacing.l),
+                  itemCount: items.length,
+                  separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.s),
+                  itemBuilder: (_, i) => _UsedUpRow(items[i]),
+                ),
+              ],
             );
           },
         ),

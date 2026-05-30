@@ -41,6 +41,8 @@ class InventoryCubit extends Cubit<InventoryState> {
 
   Future<List<StockEntry>> loadUsedUp() => _repository.loadUsedUp();
 
+  Future<void> clearUsedUp() => _repository.clearUsedUp();
+
   Future<List<String>> loadCustomLocations() =>
       _repository.loadCustomLocations();
 
