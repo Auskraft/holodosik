@@ -6,7 +6,6 @@ import '../../core/theme/app_spacing.dart';
 import '../../core/theme/context_theme_x.dart';
 import '../../l10n/app_localizations.dart';
 import '../add_batch/view/add_batch_page.dart';
-import '../catalog/view/catalog_page.dart';
 import '../inventory/bloc/inventory_cubit.dart';
 import '../inventory/view/inventory_page.dart';
 import '../settings/view/settings_page.dart';
@@ -28,7 +27,6 @@ class _AppShellState extends State<AppShell> {
   static const _builders = <Widget Function()>[
     InventoryPage.new,
     UrgentPage.new,
-    CatalogPage.new,
     SettingsPage.new,
   ];
   final List<Widget?> _pages = List.filled(_builders.length, null);
@@ -50,7 +48,7 @@ class _AppShellState extends State<AppShell> {
 
   @override
   Widget build(BuildContext context) {
-    final showFab = _index != 3;
+    final showFab = _index != 2;
 
     return PopScope(
       // С любой вкладки «назад» сначала возвращает на «Запасы»; выходим из
@@ -106,7 +104,6 @@ class _FloatingNav extends StatelessWidget {
     final items = <({IconData icon, String label, int badge})>[
       (icon: Icons.kitchen_outlined, label: l.navInventory, badge: 0),
       (icon: Icons.local_fire_department_outlined, label: l.navUrgent, badge: attention),
-      (icon: Icons.menu_book_outlined, label: l.navCatalog, badge: 0),
       (icon: Icons.settings_outlined, label: l.navSettings, badge: 0),
     ];
 
