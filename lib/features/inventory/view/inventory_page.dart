@@ -85,21 +85,26 @@ class _InventoryView extends StatelessWidget {
               Expanded(
                 child: items.isEmpty
                     ? _EmptyView(hasQuery: state.query.trim().isNotEmpty)
-                    : ListView.separated(
-                        padding: const EdgeInsets.fromLTRB(
-                          AppSpacing.l,
-                          0,
-                          AppSpacing.l,
-                          AppSpacing.giant,
-                        ),
-                        itemCount: items.length,
-                        separatorBuilder: (_, _) =>
-                            const SizedBox(height: AppSpacing.m),
-                        itemBuilder: (_, i) => StockCard(
-                          entry: items[i],
-                          onTap: () => _openDetail(context, items[i]),
-                          onUse: () => showUseSheet(context, items[i]),
-                        ),
+                    : Stack(
+                        children: [
+                          const Positioned.fill(child: _StockMascots()),
+                          ListView.separated(
+                            padding: const EdgeInsets.fromLTRB(
+                              AppSpacing.l,
+                              0,
+                              AppSpacing.l,
+                              AppSpacing.giant,
+                            ),
+                            itemCount: items.length,
+                            separatorBuilder: (_, _) =>
+                                const SizedBox(height: AppSpacing.m),
+                            itemBuilder: (_, i) => StockCard(
+                              entry: items[i],
+                              onTap: () => _openDetail(context, items[i]),
+                              onUse: () => showUseSheet(context, items[i]),
+                            ),
+                          ),
+                        ],
                       ),
               ),
             ],
@@ -227,6 +232,50 @@ class _EmptyView extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+/// Маскоты-фон под списком запасов (когда есть продукты).
+class _StockMascots extends StatelessWidget {
+  const _StockMascots();
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: LayoutBuilder(
+        builder: (context, c) {
+          final w = c.maxWidth;
+          final h = c.maxHeight;
+          const opacity = 0.5;
+          return Stack(
+            children: [
+              Positioned(
+                left: -w * 0.05,
+                bottom: h * 0.04,
+                child: Opacity(
+                  opacity: opacity,
+                  child: Image.asset(
+                    'assets/images/stock_raspberry.png',
+                    width: w * 0.42,
+                  ),
+                ),
+              ),
+              Positioned(
+                left: w * 0.42,
+                bottom: 0,
+                child: Opacity(
+                  opacity: opacity,
+                  child: Image.asset(
+                    'assets/images/stock_onion.png',
+                    width: w * 0.3,
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
