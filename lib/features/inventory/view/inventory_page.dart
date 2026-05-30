@@ -170,6 +170,7 @@ class _EmptyView extends StatelessWidget {
       return EmptyState(icon: Icons.search_off, title: l.emptySearch);
     }
 
+    final colors = context.colors;
     return LayoutBuilder(
       builder: (context, c) {
         final w = c.maxWidth;
@@ -177,39 +178,51 @@ class _EmptyView extends StatelessWidget {
         const opacity = 0.65;
         return Stack(
           children: [
-            Align(
-              alignment: const Alignment(-0.35, 0.0),
-              child: Opacity(
-                opacity: opacity,
-                child: Image.asset('assets/images/add_pepper.png', width: w * 0.5),
-              ),
-            ),
             Positioned(
               right: -w * 0.04,
-              top: h * 0.08,
+              top: h * 0.06,
               child: Opacity(
                 opacity: opacity,
                 child: Image.asset(
                   'assets/images/empty_blueberry.png',
-                  width: w * 0.3,
+                  width: w * 0.26,
                 ),
+              ),
+            ),
+            Align(
+              alignment: const Alignment(-0.1, 0.35),
+              child: Opacity(
+                opacity: opacity,
+                child: Image.asset('assets/images/add_pepper.png', width: w * 0.44),
               ),
             ),
             Positioned(
               left: -w * 0.05,
-              bottom: h * 0.04,
+              bottom: h * 0.02,
               child: Opacity(
                 opacity: opacity,
                 child: Image.asset(
                   'assets/images/empty_holodos.png',
-                  width: w * 0.34,
+                  width: w * 0.3,
                 ),
               ),
             ),
-            EmptyState(
-              icon: Icons.kitchen_outlined,
-              title: l.emptyStockTitle,
-              hint: l.emptyStockAction,
+            Align(
+              alignment: const Alignment(0, -0.5),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.kitchen_outlined, size: 48, color: colors.textFaint),
+                  const SizedBox(height: AppSpacing.l),
+                  Text(l.emptyStockTitle, style: context.textTheme.titleMedium),
+                  const SizedBox(height: AppSpacing.s),
+                  Text(
+                    l.emptyStockAction,
+                    style: context.textTheme.bodyMedium
+                        ?.copyWith(color: colors.textMuted),
+                  ),
+                ],
+              ),
             ),
           ],
         );
