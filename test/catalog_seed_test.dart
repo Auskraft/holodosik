@@ -12,10 +12,10 @@ void main() {
     databaseFactory = databaseFactoryFfi;
   });
 
-  Future<String> loadAsset(String _) =>
-      File('assets/data/ingredients.json').readAsString();
+  Future<String> loadAsset(String path) =>
+      File(path).readAsString();
 
-  test('сидинг импортирует справочник из ingredients.json', () async {
+  test('сидинг импортирует пищевой и непищевой справочники', () async {
     final db = AppDatabase(path: inMemoryDatabasePath);
     final ds = CatalogLocalDataSource(db);
     final repo = CatalogRepositoryImpl(ds, assetLoader: loadAsset);
@@ -23,13 +23,17 @@ void main() {
     expect(await ds.productCount(), 0);
     await repo.ensureSeeded();
 
-    expect(await ds.productCount(), 992);
+    // 992 пищевых + непищевые позиции.
+    final count = await ds.productCount();
+    expect(count, greaterThan(992));
+
     final categories = await repo.categories();
     expect(categories.length, greaterThan(20));
     expect(categories.first.sortOrder, 0);
+    expect(categories.any((c) => c.name == 'Упаковка и покрытия'), isTrue);
 
     // Повторный вызов не дублирует данные.
     await repo.ensureSeeded();
-    expect(await ds.productCount(), 992);
+    expect(await ds.productCount(), count);
   });
 }

@@ -12,7 +12,10 @@ class CatalogRepositoryImpl implements CatalogRepository {
   CatalogRepositoryImpl(this._dataSource, {AssetLoader? assetLoader})
       : _loadAsset = assetLoader ?? rootBundle.loadString;
 
-  static const String _seedAsset = 'assets/data/ingredients.json';
+  static const List<String> _seedAssets = [
+    'assets/data/ingredients.json',
+    'assets/data/non_food_ingredients.json',
+  ];
 
   final CatalogLocalDataSource _dataSource;
   final AssetLoader _loadAsset;
@@ -20,7 +23,8 @@ class CatalogRepositoryImpl implements CatalogRepository {
   @override
   Future<void> ensureSeeded() async {
     if (await _dataSource.productCount() > 0) return;
-    final seed = parseIngredients(await _loadAsset(_seedAsset));
+    final sources = [for (final a in _seedAssets) await _loadAsset(a)];
+    final seed = parseCatalog(sources);
     await _dataSource.seed(seed.categories, seed.products);
   }
 

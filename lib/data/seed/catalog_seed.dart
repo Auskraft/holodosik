@@ -9,36 +9,44 @@ class CatalogSeedData {
   final List<Product> products;
 }
 
-/// Парсит `ingredients.json` (массив объектов name/sub/category/...) в категории
-/// (в порядке первого появления) и продукты. Дубли имён различаются по `sub`.
-CatalogSeedData parseIngredients(String jsonStr) {
-  final list = jsonDecode(jsonStr) as List<dynamic>;
+/// Чистит JSON5 (комментарии `//`, висячие запятые) до строгого JSON.
+String stripJson5(String src) {
+  final noComments = src.replaceAll(RegExp(r'//[^\n\r]*'), '');
+  return noComments.replaceAll(RegExp(r',(\s*[}\]])'), r'$1');
+}
 
+/// Парсит один или несколько источников (массивы объектов name/sub/category/...)
+/// в общий справочник: категории в порядке первого появления и продукты со
+/// сквозной нумерацией. Дубли имён различаются по `sub`.
+CatalogSeedData parseCatalog(List<String> sources) {
   final order = <String>[];
   final categoryId = <String, String>{};
   final products = <Product>[];
 
-  for (final raw in list) {
-    final m = raw as Map<String, dynamic>;
-    final catName = (m['category'] as String?)?.trim().isNotEmpty == true
-        ? (m['category'] as String).trim()
-        : 'Прочее';
-    if (!categoryId.containsKey(catName)) {
-      categoryId[catName] = 'cat_${order.length}';
-      order.add(catName);
+  for (final src in sources) {
+    final list = jsonDecode(stripJson5(src)) as List<dynamic>;
+    for (final raw in list) {
+      final m = raw as Map<String, dynamic>;
+      final catName = (m['category'] as String?)?.trim().isNotEmpty == true
+          ? (m['category'] as String).trim()
+          : 'Прочее';
+      if (!categoryId.containsKey(catName)) {
+        categoryId[catName] = 'cat_${order.length}';
+        order.add(catName);
+      }
+
+      final name = (m['name'] as String).trim();
+      final sub = (m['sub'] as String?)?.trim() ?? '';
+      final display = sub.isEmpty ? name : '$name, $sub';
+
+      products.add(
+        Product(
+          id: 'prod_${products.length}',
+          name: display,
+          categoryId: categoryId[catName]!,
+        ),
+      );
     }
-
-    final name = (m['name'] as String).trim();
-    final sub = (m['sub'] as String?)?.trim() ?? '';
-    final display = sub.isEmpty ? name : '$name, $sub';
-
-    products.add(
-      Product(
-        id: 'prod_${products.length}',
-        name: display,
-        categoryId: categoryId[catName]!,
-      ),
-    );
   }
 
   final categories = [
