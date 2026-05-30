@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/formatting/expiry_presenter.dart';
 import '../../../core/formatting/quantity_formatter.dart';
 import '../../../core/haptics/app_haptics.dart';
 import '../../../core/icons/ingredient_emoji.dart';
@@ -25,10 +24,6 @@ class StockCard extends StatelessWidget {
     final colors = context.colors;
     final info = entry.expiryInfo(DateTime.now());
     final qty = QuantityFormatter.format(entry.quantity);
-    final hint = ExpiryPresenter.hint(l, info);
-    // qty — готовая строка вида «500 г».
-
-    final meta = [entry.category.name, ?hint].join(' · ');
 
     return Material(
       color: colors.surface,
@@ -37,61 +32,51 @@ class StockCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.lg),
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.all(AppSpacing.l),
+          padding: const EdgeInsets.all(AppSpacing.m),
           decoration: BoxDecoration(
             border: Border.all(color: colors.border),
             borderRadius: BorderRadius.circular(AppRadius.lg),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _Bubble(
-                    emoji: ProductEmoji.of(
-                      entry.name,
-                      category: entry.category.name,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.m),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          entry.name,
-                          style: context.textTheme.titleMedium,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: AppSpacing.xs),
-                        Text(
-                          qty,
-                          style: context.textTheme.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.s),
-                  StatusBadge(info.status),
-                ],
+              _Bubble(
+                emoji: ProductEmoji.of(entry.name, category: entry.category.name),
               ),
-              const SizedBox(height: AppSpacing.m),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      meta,
+              const SizedBox(width: AppSpacing.m),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      entry.name,
+                      style: context.textTheme.titleMedium,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      qty,
+                      style: context.textTheme.bodyLarge
+                          ?.copyWith(fontWeight: FontWeight.w700),
+                    ),
+                    Text(
+                      entry.category.name,
                       style: context.textTheme.bodySmall
                           ?.copyWith(color: colors.textMuted),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  const SizedBox(width: AppSpacing.s),
+                  ],
+                ),
+              ),
+              const SizedBox(width: AppSpacing.s),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  StatusBadge(info.status),
+                  const SizedBox(height: AppSpacing.s),
                   FilledButton(
                     onPressed: () {
                       AppHaptics.light();
@@ -101,9 +86,11 @@ class StockCard extends StatelessWidget {
                       backgroundColor: colors.accentSoft,
                       foregroundColor: colors.accentSoftText,
                       padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.l,
+                        horizontal: AppSpacing.m,
                         vertical: AppSpacing.s,
                       ),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppRadius.pill),
                       ),
