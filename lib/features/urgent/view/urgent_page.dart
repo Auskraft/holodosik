@@ -22,24 +22,30 @@ class UrgentPage extends StatelessWidget {
 
     return SafeArea(
       bottom: false,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
+      child: BlocBuilder<InventoryCubit, InventoryState>(
+        builder: (context, state) {
+          final sections = _buildSections(l, state.all);
+          final header = Padding(
             padding: const EdgeInsets.all(AppSpacing.l),
             child: Text(l.urgentTitle, style: context.textTheme.headlineMedium),
-          ),
-          Expanded(
-            child: BlocBuilder<InventoryCubit, InventoryState>(
-              builder: (context, state) {
-                final sections = _buildSections(l, state.all);
-                if (sections.isEmpty) {
-                  return const _UrgentEmpty();
-                }
-                return Stack(
-                  children: [
-                    const Positioned.fill(child: _UrgentBackground()),
-                    ListView(
+          );
+
+          if (sections.isEmpty) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [header, const Expanded(child: _UrgentEmpty())],
+            );
+          }
+
+          return Stack(
+            children: [
+              const Positioned.fill(child: _UrgentBackground()),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  header,
+                  Expanded(
+                    child: ListView(
                       padding: const EdgeInsets.fromLTRB(
                         AppSpacing.l,
                         0,
@@ -80,12 +86,12 @@ class UrgentPage extends StatelessWidget {
                         ],
                       ],
                     ),
-                  ],
-                );
-              },
-            ),
-          ),
-        ],
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -207,11 +213,11 @@ class _UrgentBackground extends StatelessWidget {
         return Stack(
           children: [
             Positioned(
-              right: w * 0.02,
-              top: h * 0.02,
+              right: w * 0.03,
+              top: h * 0.05,
               child: Opacity(
                 opacity: _opacity,
-                child: Image.asset('assets/images/tomato.png', width: w * 0.24),
+                child: Image.asset('assets/images/tomato.png', width: w * 0.18),
               ),
             ),
             Positioned(
