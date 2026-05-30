@@ -22,7 +22,7 @@ void main() {
           id: 'b1',
           productId: 'p1',
           location: StorageLocation.fridge,
-          quantity: WeightQuantity(500, QtyUnit.gram),
+          quantity: Quantity(amount: 500, unit: 'г'),
         ),
       );
 
@@ -40,7 +40,7 @@ void main() {
       'b1',
       UsageEvent(
         id: 'u1',
-        amount: const WeightQuantity(200, QtyUnit.gram),
+        amount: const Quantity(amount: 200, unit: 'г'),
         reason: UsageReason.consumed,
         timestamp: DateTime(2026, 5, 30),
       ),
@@ -64,7 +64,7 @@ void main() {
       'b1',
       UsageEvent(
         id: 'u1',
-        amount: const WeightQuantity(500, QtyUnit.gram),
+        amount: const Quantity(amount: 500, unit: 'г'),
         reason: UsageReason.consumed,
         timestamp: DateTime(2026, 5, 30),
       ),

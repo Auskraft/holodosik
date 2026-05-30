@@ -26,6 +26,7 @@ class StockCard extends StatelessWidget {
     final info = entry.expiryInfo(DateTime.now());
     final qty = QuantityFormatter.format(entry.quantity);
     final hint = ExpiryPresenter.hint(l, info);
+    // qty — готовая строка вида «500 г».
 
     final meta = [entry.category.name, ?hint].join(' · ');
 
@@ -61,17 +62,11 @@ class StockCard extends StatelessWidget {
                         ),
                         const SizedBox(height: AppSpacing.xs),
                         Text(
-                          qty.primary,
+                          qty,
                           style: context.textTheme.bodyLarge?.copyWith(
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        if (qty.totalValue != null)
-                          Text(
-                            l.qtyTotal(qty.totalValue!),
-                            style: context.textTheme.bodySmall
-                                ?.copyWith(color: colors.textFaint),
-                          ),
                       ],
                     ),
                   ),

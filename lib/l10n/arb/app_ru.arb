@@ -102,6 +102,14 @@
   "editTitle": "Изменить запас",
   "saveEdit": "Сохранить",
   "toastSaved": "Сохранено",
+  "addSearchHint": "Найдите продукт",
+  "addManually": "Добавить «{name}» вручную",
+  "@addManually": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "fieldAmount": "Количество",
+  "fieldUnit": "Единица измерения",
+  "categoryOther": "Прочее",
   "fieldName": "Название",
   "fieldNameHint": "Например, Молоко",
   "qtyModeTitle": "Как считаем количество",

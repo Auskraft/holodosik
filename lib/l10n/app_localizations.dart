@@ -477,6 +477,36 @@ abstract class AppL10n {
   /// **'Сохранено'**
   String get toastSaved;
 
+  /// No description provided for @addSearchHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Найдите продукт'**
+  String get addSearchHint;
+
+  /// No description provided for @addManually.
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить «{name}» вручную'**
+  String addManually(String name);
+
+  /// No description provided for @fieldAmount.
+  ///
+  /// In ru, this message translates to:
+  /// **'Количество'**
+  String get fieldAmount;
+
+  /// No description provided for @fieldUnit.
+  ///
+  /// In ru, this message translates to:
+  /// **'Единица измерения'**
+  String get fieldUnit;
+
+  /// No description provided for @categoryOther.
+  ///
+  /// In ru, this message translates to:
+  /// **'Прочее'**
+  String get categoryOther;
+
   /// No description provided for @fieldName.
   ///
   /// In ru, this message translates to:

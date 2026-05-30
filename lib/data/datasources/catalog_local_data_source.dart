@@ -32,6 +32,7 @@ class CatalogLocalDataSource {
           'id': p.id,
           'name': p.name,
           'category_id': p.categoryId,
+          'units': p.units.join('|'),
         });
       }
       await batch.commit(noResult: true);
@@ -54,12 +55,15 @@ class CatalogLocalDataSource {
   Future<List<Product>> products() async {
     final db = await _db.database;
     final rows = await db.query('products', orderBy: 'name ASC');
-    return rows
-        .map((r) => Product(
-              id: r['id'] as String,
-              name: r['name'] as String,
-              categoryId: r['category_id'] as String,
-            ))
-        .toList();
+    return rows.map((r) {
+      final raw = (r['units'] as String?) ?? '';
+      final units = raw.isEmpty ? const ['шт'] : raw.split('|');
+      return Product(
+        id: r['id'] as String,
+        name: r['name'] as String,
+        categoryId: r['category_id'] as String,
+        units: units,
+      );
+    }).toList();
   }
 }

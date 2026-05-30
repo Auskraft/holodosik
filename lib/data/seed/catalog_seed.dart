@@ -38,12 +38,17 @@ CatalogSeedData parseCatalog(List<String> sources) {
       final name = (m['name'] as String).trim();
       final sub = (m['sub'] as String?)?.trim() ?? '';
       final display = sub.isEmpty ? name : '$name, $sub';
+      final units = [
+        for (final u in (m['units'] as List<dynamic>? ?? const []))
+          (u as String).trim(),
+      ];
 
       products.add(
         Product(
           id: 'prod_${products.length}',
           name: display,
           categoryId: categoryId[catName]!,
+          units: units.isEmpty ? const ['шт'] : units,
         ),
       );
     }

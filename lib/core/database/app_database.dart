@@ -15,7 +15,7 @@ class AppDatabase {
 
   Database? _db;
 
-  static const int _version = 2;
+  static const int _version = 3;
 
   Future<Database> get database async => _db ??= await _open();
 
@@ -33,10 +33,13 @@ class AppDatabase {
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 2) {
-      await db.execute(
-        'ALTER TABLE stock_batches ADD COLUMN used_up INTEGER NOT NULL DEFAULT 0',
-      );
+    // v3 сменил модель количества (amount+unit) и добавил units у продуктов —
+    // пересоздаём схему начисто (данные на этом этапе разработки одноразовые).
+    if (oldVersion < 3) {
+      for (final t in ['usage_events', 'stock_batches', 'products', 'categories']) {
+        await db.execute('DROP TABLE IF EXISTS $t');
+      }
+      await _onCreate(db, newVersion);
     }
   }
 
@@ -55,6 +58,7 @@ class AppDatabase {
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
         category_id TEXT NOT NULL,
+        units TEXT NOT NULL DEFAULT '',
         FOREIGN KEY (category_id) REFERENCES categories (id)
       )
     ''');

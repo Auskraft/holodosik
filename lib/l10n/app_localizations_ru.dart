@@ -229,6 +229,23 @@ class AppL10nRu extends AppL10n {
   String get toastSaved => 'Сохранено';
 
   @override
+  String get addSearchHint => 'Найдите продукт';
+
+  @override
+  String addManually(String name) {
+    return 'Добавить «$name» вручную';
+  }
+
+  @override
+  String get fieldAmount => 'Количество';
+
+  @override
+  String get fieldUnit => 'Единица измерения';
+
+  @override
+  String get categoryOther => 'Прочее';
+
+  @override
   String get fieldName => 'Название';
 
   @override

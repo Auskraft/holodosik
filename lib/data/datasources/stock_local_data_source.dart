@@ -147,42 +147,18 @@ class StockLocalDataSource {
         'note': b.note,
       };
 
-  Map<String, Object?> _quantityColumns(Quantity q, String prefix) {
-    final base = {
-      '${prefix}mode': '',
-      '${prefix}count': null,
-      '${prefix}amount': null,
-      '${prefix}per_pack': null,
-      '${prefix}unit': q.unit.name,
-    };
-    switch (q) {
-      case CountQuantity(:final count):
-        return {...base, '${prefix}mode': 'count', '${prefix}count': count};
-      case WeightQuantity(:final amount):
-        return {...base, '${prefix}mode': 'weight', '${prefix}amount': amount};
-      case PacksQuantity(:final packs, :final perPack):
-        return {
-          ...base,
-          '${prefix}mode': 'packs',
-          '${prefix}count': packs,
-          '${prefix}per_pack': perPack,
-        };
-    }
-  }
+  Map<String, Object?> _quantityColumns(Quantity q, String prefix) => {
+        '${prefix}mode': 'measure',
+        '${prefix}count': null,
+        '${prefix}amount': q.amount,
+        '${prefix}per_pack': null,
+        '${prefix}unit': q.unit,
+      };
 
-  Quantity _quantityFromRow(Map<String, Object?> r, String prefix) {
-    final unit = QtyUnit.values.byName(r['${prefix}unit'] as String);
-    return switch (r['${prefix}mode'] as String) {
-      'count' => CountQuantity(r['${prefix}count'] as int, unit: unit),
-      'weight' => WeightQuantity((r['${prefix}amount'] as num).toDouble(), unit),
-      'packs' => PacksQuantity(
-          r['${prefix}count'] as int,
-          (r['${prefix}per_pack'] as num).toDouble(),
-          unit,
-        ),
-      _ => CountQuantity(0, unit: unit),
-    };
-  }
+  Quantity _quantityFromRow(Map<String, Object?> r, String prefix) => Quantity(
+        amount: (r['${prefix}amount'] as num?)?.toDouble() ?? 0,
+        unit: r['${prefix}unit'] as String? ?? 'шт',
+      );
 
   UsageEvent _eventFromRow(Map<String, Object?> r) => UsageEvent(
         id: r['id'] as String,

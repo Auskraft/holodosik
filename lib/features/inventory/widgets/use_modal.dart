@@ -38,15 +38,14 @@ class _UseSheet extends StatefulWidget {
 
 class _UseSheetState extends State<_UseSheet> {
   late final double _total = QuantityMath.total(widget.entry.quantity);
-  late final QtyUnit _unit = widget.entry.quantity.unit;
+  late final String _unit = widget.entry.quantity.unit;
   double _used = 0;
   UsageReason _reason = UsageReason.consumed;
 
-  bool get _isCount => widget.entry.quantity is CountQuantity;
   double get _step => switch (_unit) {
-        QtyUnit.piece || QtyUnit.bunch || QtyUnit.pack => 1,
-        QtyUnit.gram || QtyUnit.milliliter => 50,
-        QtyUnit.kilogram || QtyUnit.liter => 0.1,
+        'г' || 'мл' => 50,
+        'кг' || 'л' => 0.1,
+        _ => 1,
       };
 
   void _setUsed(double v) {
@@ -55,9 +54,7 @@ class _UseSheetState extends State<_UseSheet> {
 
   void _confirm() {
     AppHaptics.success();
-    final amount = _isCount
-        ? CountQuantity(_used.round(), unit: _unit) as Quantity
-        : WeightQuantity(_used, _unit);
+    final amount = Quantity(amount: _used, unit: _unit);
     context.read<InventoryCubit>().use(
           widget.entry.id,
           UsageEvent(
@@ -100,8 +97,7 @@ class _UseSheetState extends State<_UseSheet> {
           const SizedBox(height: AppSpacing.l),
           _Stepper(
             value: _used,
-            unit: _unit.label,
-            isCount: _isCount,
+            unit: _unit,
             onMinus: () {
               AppHaptics.selection();
               _setUsed(_used - _step);
@@ -141,7 +137,7 @@ class _UseSheetState extends State<_UseSheet> {
           Text(
             QuantityMath.isEmpty(remaining)
                 ? l.useWillBeUsedUp
-                : l.useRemaining(remainingFmt.primary),
+                : l.useRemaining(remainingFmt),
             style: context.textTheme.bodyMedium?.copyWith(color: colors.textMuted),
           ),
           const SizedBox(height: AppSpacing.m),
@@ -170,25 +166,21 @@ class _Stepper extends StatelessWidget {
   const _Stepper({
     required this.value,
     required this.unit,
-    required this.isCount,
     required this.onMinus,
     required this.onPlus,
   });
 
   final double value;
   final String unit;
-  final bool isCount;
   final VoidCallback onMinus;
   final VoidCallback onPlus;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final text = isCount
-        ? value.round().toString()
-        : (value == value.truncateToDouble()
-            ? value.toInt().toString()
-            : value.toStringAsFixed(1).replaceAll('.', ','));
+    final text = value == value.truncateToDouble()
+        ? value.toInt().toString()
+        : value.toStringAsFixed(1).replaceAll('.', ',');
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

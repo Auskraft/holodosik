@@ -51,7 +51,7 @@ class ProductDetailPage extends StatelessWidget {
               children: [
                 _Hero(entry: entry, statusInfo: info),
                 const SizedBox(height: AppSpacing.l),
-                _QuantityBlock(primary: qty.primary, sub: qty.totalValue, hint: hint),
+                _QuantityBlock(primary: qty, hint: hint),
                 const SizedBox(height: AppSpacing.l),
                 _MetaRows(entry: entry),
                 const SizedBox(height: AppSpacing.xl),
@@ -116,9 +116,8 @@ class _Hero extends StatelessWidget {
 }
 
 class _QuantityBlock extends StatelessWidget {
-  const _QuantityBlock({required this.primary, this.sub, this.hint});
+  const _QuantityBlock({required this.primary, this.hint});
   final String primary;
-  final String? sub;
   final String? hint;
 
   @override
@@ -145,11 +144,6 @@ class _QuantityBlock extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(primary, style: context.textTheme.headlineMedium),
-                if (sub != null)
-                  Text(
-                    l.qtyTotal(sub!),
-                    style: context.textTheme.bodySmall?.copyWith(color: colors.textFaint),
-                  ),
               ],
             ),
           ),
@@ -243,7 +237,7 @@ class _History extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  '−${QuantityFormatter.format(e.amount).primary}',
+                  '−${QuantityFormatter.format(e.amount)}',
                   style: context.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
