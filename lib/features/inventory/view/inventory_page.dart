@@ -190,10 +190,10 @@ class _EmptyView extends StatelessWidget {
               ),
             ),
             Align(
-              alignment: const Alignment(-0.1, 0.35),
+              alignment: const Alignment(-0.55, -0.35),
               child: Opacity(
                 opacity: opacity,
-                child: Image.asset('assets/images/add_pepper.png', width: w * 0.44),
+                child: Image.asset('assets/images/add_pepper.png', width: w * 0.33),
               ),
             ),
             Positioned(
@@ -208,7 +208,7 @@ class _EmptyView extends StatelessWidget {
               ),
             ),
             Align(
-              alignment: const Alignment(0, -0.5),
+              alignment: Alignment.center,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
