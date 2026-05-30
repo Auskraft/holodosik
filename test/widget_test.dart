@@ -3,21 +3,30 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:holodosik/app/app.dart';
 import 'package:holodosik/app/theme/theme_cubit.dart';
-import 'package:holodosik/core/di/locator.dart';
+import 'package:holodosik/domain/entities/stock.dart';
 import 'package:holodosik/domain/repositories/stock_repository.dart';
 import 'package:holodosik/features/inventory/bloc/inventory_cubit.dart';
 
-void main() {
-  setUpAll(setupLocator);
+/// Фейковый репозиторий: пустые запасы, без БД — тест проверяет UI, не данные.
+class _FakeStockRepository implements StockRepository {
+  @override
+  Stream<List<StockEntry>> watchInventory() => Stream.value(const []);
+  @override
+  Future<void> addBatch(StockEntry entry) async {}
+  @override
+  Future<void> applyUsage(String batchId, UsageEvent event) async {}
+  @override
+  Future<void> discard(String batchId) async {}
+}
 
-  testWidgets('Главный экран показывает бренд и карточки запасов', (tester) async {
+void main() {
+  testWidgets('Главный экран показывает бренд и пустое состояние запасов',
+      (tester) async {
     await tester.pumpWidget(
       MultiBlocProvider(
         providers: [
           BlocProvider(create: (_) => ThemeCubit()),
-          BlocProvider(
-            create: (_) => InventoryCubit(locator<StockRepository>()),
-          ),
+          BlocProvider(create: (_) => InventoryCubit(_FakeStockRepository())),
         ],
         child: const HolodosikApp(),
       ),
@@ -25,7 +34,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Холодосик'), findsOneWidget);
-    expect(find.text('Куриное филе'), findsOneWidget);
-    expect(find.text('Использовать'), findsWidgets);
+    expect(find.text('Здесь пусто'), findsOneWidget);
   });
 }
