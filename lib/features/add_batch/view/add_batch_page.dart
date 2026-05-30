@@ -73,6 +73,7 @@ class _AddBatchPageState extends State<AddBatchPage> {
     final products = await repo.products();
     final categories = await repo.categories();
     final usedUp = await inventory.loadUsedUp();
+    final customLocations = await inventory.loadCustomLocations();
     if (!mounted) return;
 
     final byId = {for (final c in categories) c.id: c};
@@ -80,7 +81,7 @@ class _AddBatchPageState extends State<AddBatchPage> {
     // Ранее добавленные: уникальные продукты из активных и использованных партий.
     final seen = <String>{};
     final recent = <Product>[];
-    final locations = [...StorageLocations.builtins];
+    final locations = [...StorageLocations.builtins, ...customLocations];
     for (final e in [...inventory.state.all, ...usedUp]) {
       byId.putIfAbsent(e.category.id, () => e.category);
       if (!locations.contains(e.location)) locations.add(e.location);
@@ -242,6 +243,7 @@ class _AddBatchPageState extends State<AddBatchPage> {
 
   Future<void> _addLocation() async {
     final l = AppL10n.of(context);
+    final cubit = context.read<InventoryCubit>();
     final controller = TextEditingController();
     final name = await showDialog<String>(
       context: context,
@@ -268,6 +270,10 @@ class _AddBatchPageState extends State<AddBatchPage> {
     );
     if (name != null && name.isNotEmpty) {
       AppHaptics.selection();
+      if (!StorageLocations.builtins.contains(name)) {
+        await cubit.addLocation(name);
+      }
+      if (!mounted) return;
       setState(() {
         if (!_knownLocations.contains(name)) {
           _knownLocations = [..._knownLocations, name];
@@ -275,6 +281,79 @@ class _AddBatchPageState extends State<AddBatchPage> {
         _location = name;
       });
     }
+  }
+
+  Future<void> _editLocation(String location) async {
+    // Встроенные места не редактируем и не удаляем.
+    if (StorageLocations.builtins.contains(location)) return;
+    AppHaptics.light();
+    final l = AppL10n.of(context);
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: context.colors.surface,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.edit_outlined),
+              title: Text(l.locationRename),
+              onTap: () => Navigator.pop(ctx, 'rename'),
+            ),
+            ListTile(
+              leading: Icon(Icons.delete_outline, color: context.colors.expiredText),
+              title: Text(l.locationDelete),
+              onTap: () => Navigator.pop(ctx, 'delete'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (!mounted || action == null) return;
+    if (action == 'rename') {
+      await _renameLocation(location);
+    } else if (action == 'delete') {
+      await context.read<InventoryCubit>().deleteLocation(location);
+      if (!mounted) return;
+      setState(() {
+        _knownLocations = _knownLocations.where((e) => e != location).toList();
+        if (_location == location) _location = StorageLocations.fridge;
+      });
+    }
+  }
+
+  Future<void> _renameLocation(String from) async {
+    final l = AppL10n.of(context);
+    final controller = TextEditingController(text: from);
+    final to = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: context.colors.surface,
+        title: Text(l.locationRename),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: InputDecoration(hintText: l.addLocationHint),
+          onSubmitted: (v) => Navigator.pop(ctx, v.trim()),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l.cancel)),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, controller.text.trim()),
+            child: Text(l.add),
+          ),
+        ],
+      ),
+    );
+    if (!mounted || to == null || to.isEmpty || to == from) return;
+    await context.read<InventoryCubit>().renameLocation(from, to);
+    if (!mounted) return;
+    setState(() {
+      _knownLocations = [
+        for (final e in _knownLocations) if (e == from) to else e,
+      ];
+      if (_location == from) _location = to;
+    });
   }
 
   Future<void> _pickDate() async {
@@ -490,6 +569,7 @@ class _AddBatchPageState extends State<AddBatchPage> {
           locations: _knownLocations,
           onChanged: (loc) => setState(() => _location = loc),
           onAddNew: _addLocation,
+          onLongPress: _editLocation,
         ),
         const SizedBox(height: AppSpacing.xl),
         SwitchListTile(
@@ -702,12 +782,14 @@ class _LocationPicker extends StatelessWidget {
     required this.locations,
     required this.onChanged,
     required this.onAddNew,
+    required this.onLongPress,
   });
 
   final String value;
   final List<String> locations;
   final ValueChanged<String> onChanged;
   final VoidCallback onAddNew;
+  final ValueChanged<String> onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -719,21 +801,24 @@ class _LocationPicker extends StatelessWidget {
       runSpacing: AppSpacing.s,
       children: [
         for (final loc in options)
-          ChoiceChip(
-            label: Text(loc),
-            selected: loc == value,
-            showCheckmark: false,
-            backgroundColor: colors.surface,
-            selectedColor: colors.accentSoft,
-            side: BorderSide(color: colors.border),
-            labelStyle: context.textTheme.bodySmall?.copyWith(
-              color: loc == value ? colors.accentSoftText : colors.textMuted,
-              fontWeight: FontWeight.w600,
+          GestureDetector(
+            onLongPress: () => onLongPress(loc),
+            child: ChoiceChip(
+              label: Text(loc),
+              selected: loc == value,
+              showCheckmark: false,
+              backgroundColor: colors.surface,
+              selectedColor: colors.accentSoft,
+              side: BorderSide(color: colors.border),
+              labelStyle: context.textTheme.bodySmall?.copyWith(
+                color: loc == value ? colors.accentSoftText : colors.textMuted,
+                fontWeight: FontWeight.w600,
+              ),
+              onSelected: (_) {
+                AppHaptics.selection();
+                onChanged(loc);
+              },
             ),
-            onSelected: (_) {
-              AppHaptics.selection();
-              onChanged(loc);
-            },
           ),
         ActionChip(
           avatar: Icon(Icons.add, size: 18, color: colors.accent),

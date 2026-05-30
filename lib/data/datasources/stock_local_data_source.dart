@@ -4,6 +4,7 @@ import '../../core/database/app_database.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/entities/quantity.dart';
 import '../../domain/entities/stock.dart';
+import '../../domain/entities/storage.dart';
 
 /// Доступ к запасам и журналу (stock_batches, usage_events) с join на продукты
 /// и категории. Сериализация Quantity — в плоские поля.
@@ -122,6 +123,47 @@ class StockLocalDataSource {
       'reason': event.reason.name,
       'timestamp': event.timestamp.millisecondsSinceEpoch,
       'note': event.note,
+    });
+  }
+
+  // --- пользовательские места хранения ---
+
+  Future<List<String>> loadCustomLocations() async {
+    final db = await _db.database;
+    final rows = await db.query('custom_locations', orderBy: 'sort_order ASC');
+    return [for (final r in rows) r['name'] as String];
+  }
+
+  Future<void> addCustomLocation(String name) async {
+    final db = await _db.database;
+    await db.insert(
+      'custom_locations',
+      {'name': name, 'sort_order': DateTime.now().millisecondsSinceEpoch},
+      conflictAlgorithm: ConflictAlgorithm.ignore,
+    );
+  }
+
+  Future<void> renameLocation(String from, String to) async {
+    final db = await _db.database;
+    await db.transaction((txn) async {
+      await txn.delete('custom_locations', where: 'name = ?', whereArgs: [from]);
+      await txn.insert(
+        'custom_locations',
+        {'name': to, 'sort_order': DateTime.now().millisecondsSinceEpoch},
+        conflictAlgorithm: ConflictAlgorithm.ignore,
+      );
+      await txn.update('stock_batches', {'location': to},
+          where: 'location = ?', whereArgs: [from]);
+    });
+  }
+
+  Future<void> deleteCustomLocation(String name) async {
+    final db = await _db.database;
+    await db.transaction((txn) async {
+      await txn.delete('custom_locations', where: 'name = ?', whereArgs: [name]);
+      // Партии из удалённого места переносим в холодильник.
+      await txn.update('stock_batches', {'location': StorageLocations.fridge},
+          where: 'location = ?', whereArgs: [name]);
     });
   }
 

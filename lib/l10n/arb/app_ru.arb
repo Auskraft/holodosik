@@ -115,6 +115,8 @@
   "addLocationChip": "Своё место",
   "addLocationTitle": "Новое место хранения",
   "addLocationHint": "Например, Балкон",
+  "locationRename": "Изменить название",
+  "locationDelete": "Удалить",
   "cancel": "Отмена",
   "add": "Добавить",
   "fieldName": "Название",

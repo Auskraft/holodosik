@@ -20,6 +20,14 @@ class _FakeStockRepository implements StockRepository {
   Future<void> discard(String batchId) async {}
   @override
   Future<List<StockEntry>> loadUsedUp() async => const [];
+  @override
+  Future<List<String>> loadCustomLocations() async => const [];
+  @override
+  Future<void> addLocation(String name) async {}
+  @override
+  Future<void> renameLocation(String from, String to) async {}
+  @override
+  Future<void> deleteLocation(String name) async {}
 }
 
 void main() {

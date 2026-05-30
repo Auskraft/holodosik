@@ -261,6 +261,12 @@ class AppL10nRu extends AppL10n {
   String get addLocationHint => 'Например, Балкон';
 
   @override
+  String get locationRename => 'Изменить название';
+
+  @override
+  String get locationDelete => 'Удалить';
+
+  @override
   String get cancel => 'Отмена';
 
   @override

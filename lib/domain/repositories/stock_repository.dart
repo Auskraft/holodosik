@@ -21,4 +21,10 @@ abstract interface class StockRepository {
 
   /// Израсходованные партии (архив с историей).
   Future<List<StockEntry>> loadUsedUp();
+
+  /// Пользовательские места хранения.
+  Future<List<String>> loadCustomLocations();
+  Future<void> addLocation(String name);
+  Future<void> renameLocation(String from, String to);
+  Future<void> deleteLocation(String name);
 }

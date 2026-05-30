@@ -15,7 +15,7 @@ class AppDatabase {
 
   Database? _db;
 
-  static const int _version = 3;
+  static const int _version = 4;
 
   Future<Database> get database async => _db ??= await _open();
 
@@ -40,8 +40,19 @@ class AppDatabase {
         await db.execute('DROP TABLE IF EXISTS $t');
       }
       await _onCreate(db, newVersion);
+      return;
+    }
+    if (oldVersion < 4) {
+      await db.execute(_customLocationsTable);
     }
   }
+
+  static const String _customLocationsTable = '''
+    CREATE TABLE IF NOT EXISTS custom_locations (
+      name TEXT PRIMARY KEY,
+      sort_order INTEGER NOT NULL DEFAULT 0
+    )
+  ''';
 
   Future<void> _onCreate(Database db, int version) async {
     final batch = db.batch();
@@ -95,6 +106,7 @@ class AppDatabase {
         FOREIGN KEY (batch_id) REFERENCES stock_batches (id)
       )
     ''');
+    batch.execute(_customLocationsTable);
     batch.execute(
       'CREATE INDEX idx_products_category ON products (category_id)',
     );

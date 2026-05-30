@@ -537,6 +537,18 @@ abstract class AppL10n {
   /// **'Например, Балкон'**
   String get addLocationHint;
 
+  /// No description provided for @locationRename.
+  ///
+  /// In ru, this message translates to:
+  /// **'Изменить название'**
+  String get locationRename;
+
+  /// No description provided for @locationDelete.
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить'**
+  String get locationDelete;
+
   /// No description provided for @cancel.
   ///
   /// In ru, this message translates to:

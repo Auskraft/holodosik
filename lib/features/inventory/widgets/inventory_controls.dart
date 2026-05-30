@@ -27,6 +27,7 @@ class LocationSegments extends StatelessWidget {
 
     return Wrap(
       spacing: AppSpacing.s,
+      runSpacing: AppSpacing.s,
       children: [
         for (final loc in options)
           _Segment(

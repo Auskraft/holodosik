@@ -54,6 +54,24 @@ class SqfliteStockRepository implements StockRepository {
   Future<List<StockEntry>> loadUsedUp() => _dataSource.loadEntries(usedUp: true);
 
   @override
+  Future<List<String>> loadCustomLocations() => _dataSource.loadCustomLocations();
+
+  @override
+  Future<void> addLocation(String name) => _dataSource.addCustomLocation(name);
+
+  @override
+  Future<void> renameLocation(String from, String to) async {
+    await _dataSource.renameLocation(from, to);
+    await _emit();
+  }
+
+  @override
+  Future<void> deleteLocation(String name) async {
+    await _dataSource.deleteCustomLocation(name);
+    await _emit();
+  }
+
+  @override
   Future<void> discard(String batchId) async {
     await _dataSource.deleteBatch(batchId);
     await _emit();
