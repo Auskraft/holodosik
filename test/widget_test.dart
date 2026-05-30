@@ -4,14 +4,21 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:holodosik/app/app.dart';
 import 'package:holodosik/app/theme/theme_cubit.dart';
 import 'package:holodosik/core/di/locator.dart';
+import 'package:holodosik/domain/repositories/stock_repository.dart';
+import 'package:holodosik/features/inventory/bloc/inventory_cubit.dart';
 
 void main() {
   setUpAll(setupLocator);
 
   testWidgets('Главный экран показывает бренд и карточки запасов', (tester) async {
     await tester.pumpWidget(
-      BlocProvider(
-        create: (_) => ThemeCubit(),
+      MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => ThemeCubit()),
+          BlocProvider(
+            create: (_) => InventoryCubit(locator<StockRepository>()),
+          ),
+        ],
         child: const HolodosikApp(),
       ),
     );

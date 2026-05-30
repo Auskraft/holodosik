@@ -67,6 +67,36 @@
 
   "actionUse": "Использовать",
 
+  "detailInStock": "В наличии",
+  "detailExpiry": "Срок годности",
+  "detailPurchased": "Куплено",
+  "detailOpened": "Вскрыто",
+  "detailLocation": "Место хранения",
+  "detailHistory": "История использования",
+  "detailNoHistory": "Пока ничего не брали",
+  "actionEdit": "Изменить",
+  "actionDiscard": "Списать",
+  "actionAddBatch": "Ещё партию",
+
+  "useAmountLabel": "Сколько берём",
+  "useQuarter": "Четверть",
+  "useHalf": "Половина",
+  "useAll": "Всё",
+  "useRemaining": "Останется {value}",
+  "@useRemaining": {
+    "placeholders": { "value": { "type": "String" } }
+  },
+  "useWillBeUsedUp": "Запас уйдёт в использованные",
+  "useConfirm": "Подтвердить",
+
+  "reasonCooked": "Приготовили",
+  "reasonConsumed": "Съели",
+  "reasonSpoiled": "Испортилось",
+  "reasonThrown": "Выбросили",
+
+  "toastUsed": "Использовали",
+  "toastDiscarded": "Списано",
+
   "urgentTitle": "Срочное",
   "urgentEmpty": "Всё под контролем",
   "catalogTitle": "Справочник",

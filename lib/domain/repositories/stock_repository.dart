@@ -1,7 +1,15 @@
 import '../entities/stock.dart';
 
-/// Доступ к запасам. Реализация — пока in-memory, позже sqflite (интерфейс
-/// остаётся стабильным).
+/// Доступ к запасам. Реактивный список + мутации. Реализация — пока in-memory,
+/// позже sqflite (интерфейс остаётся стабильным).
 abstract interface class StockRepository {
-  Future<List<StockEntry>> loadInventory();
+  /// Поток актуального списка запасов (обновляется после любой мутации).
+  Stream<List<StockEntry>> watchInventory();
+
+  /// Расход: уменьшает остаток партии и пишет запись в журнал. Пустая партия
+  /// уходит из активного списка.
+  Future<void> applyUsage(String batchId, UsageEvent event);
+
+  /// Списание партии (испортилось / выбросили).
+  Future<void> discard(String batchId);
 }

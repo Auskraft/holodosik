@@ -143,6 +143,77 @@ class AppL10nRu extends AppL10n {
   String get actionUse => 'Использовать';
 
   @override
+  String get detailInStock => 'В наличии';
+
+  @override
+  String get detailExpiry => 'Срок годности';
+
+  @override
+  String get detailPurchased => 'Куплено';
+
+  @override
+  String get detailOpened => 'Вскрыто';
+
+  @override
+  String get detailLocation => 'Место хранения';
+
+  @override
+  String get detailHistory => 'История использования';
+
+  @override
+  String get detailNoHistory => 'Пока ничего не брали';
+
+  @override
+  String get actionEdit => 'Изменить';
+
+  @override
+  String get actionDiscard => 'Списать';
+
+  @override
+  String get actionAddBatch => 'Ещё партию';
+
+  @override
+  String get useAmountLabel => 'Сколько берём';
+
+  @override
+  String get useQuarter => 'Четверть';
+
+  @override
+  String get useHalf => 'Половина';
+
+  @override
+  String get useAll => 'Всё';
+
+  @override
+  String useRemaining(String value) {
+    return 'Останется $value';
+  }
+
+  @override
+  String get useWillBeUsedUp => 'Запас уйдёт в использованные';
+
+  @override
+  String get useConfirm => 'Подтвердить';
+
+  @override
+  String get reasonCooked => 'Приготовили';
+
+  @override
+  String get reasonConsumed => 'Съели';
+
+  @override
+  String get reasonSpoiled => 'Испортилось';
+
+  @override
+  String get reasonThrown => 'Выбросили';
+
+  @override
+  String get toastUsed => 'Использовали';
+
+  @override
+  String get toastDiscarded => 'Списано';
+
+  @override
   String get urgentTitle => 'Срочное';
 
   @override

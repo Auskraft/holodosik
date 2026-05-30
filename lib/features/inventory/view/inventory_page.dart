@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../core/di/locator.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/theme/context_theme_x.dart';
-import '../../../domain/repositories/stock_repository.dart';
+import '../../../domain/entities/stock.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/search_field.dart';
@@ -13,21 +12,26 @@ import '../bloc/inventory_cubit.dart';
 import '../bloc/inventory_state.dart';
 import '../widgets/inventory_controls.dart';
 import '../widgets/stock_card.dart';
+import '../widgets/use_modal.dart';
+import 'product_detail_page.dart';
 
+/// Главный экран «Запасы». Cubit предоставляется на уровне приложения, поэтому
+/// он доступен и на pushed-экранах (детали, модалка).
 class InventoryPage extends StatelessWidget {
   const InventoryPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => InventoryCubit(locator<StockRepository>()),
-      child: const _InventoryView(),
-    );
-  }
+  Widget build(BuildContext context) => const _InventoryView();
 }
 
 class _InventoryView extends StatelessWidget {
   const _InventoryView();
+
+  void _openDetail(BuildContext context, StockEntry entry) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => ProductDetailPage(entryId: entry.id)),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +92,11 @@ class _InventoryView extends StatelessWidget {
                         itemCount: items.length,
                         separatorBuilder: (_, _) =>
                             const SizedBox(height: AppSpacing.m),
-                        itemBuilder: (_, i) => StockCard(entry: items[i]),
+                        itemBuilder: (_, i) => StockCard(
+                          entry: items[i],
+                          onTap: () => _openDetail(context, items[i]),
+                          onUse: () => showUseSheet(context, items[i]),
+                        ),
                       ),
               ),
             ],

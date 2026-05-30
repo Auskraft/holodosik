@@ -52,6 +52,20 @@ class StockBatch extends Equatable {
   final String? note;
   final List<UsageEvent> history;
 
+  StockBatch copyWith({Quantity? quantity, List<UsageEvent>? history}) {
+    return StockBatch(
+      id: id,
+      productId: productId,
+      location: location,
+      quantity: quantity ?? this.quantity,
+      purchaseDate: purchaseDate,
+      expiryDate: expiryDate,
+      openedDate: openedDate,
+      note: note,
+      history: history ?? this.history,
+    );
+  }
+
   @override
   List<Object?> get props =>
       [id, productId, location, quantity, purchaseDate, expiryDate, openedDate, note, history];

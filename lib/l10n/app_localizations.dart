@@ -309,6 +309,144 @@ abstract class AppL10n {
   /// **'Использовать'**
   String get actionUse;
 
+  /// No description provided for @detailInStock.
+  ///
+  /// In ru, this message translates to:
+  /// **'В наличии'**
+  String get detailInStock;
+
+  /// No description provided for @detailExpiry.
+  ///
+  /// In ru, this message translates to:
+  /// **'Срок годности'**
+  String get detailExpiry;
+
+  /// No description provided for @detailPurchased.
+  ///
+  /// In ru, this message translates to:
+  /// **'Куплено'**
+  String get detailPurchased;
+
+  /// No description provided for @detailOpened.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вскрыто'**
+  String get detailOpened;
+
+  /// No description provided for @detailLocation.
+  ///
+  /// In ru, this message translates to:
+  /// **'Место хранения'**
+  String get detailLocation;
+
+  /// No description provided for @detailHistory.
+  ///
+  /// In ru, this message translates to:
+  /// **'История использования'**
+  String get detailHistory;
+
+  /// No description provided for @detailNoHistory.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пока ничего не брали'**
+  String get detailNoHistory;
+
+  /// No description provided for @actionEdit.
+  ///
+  /// In ru, this message translates to:
+  /// **'Изменить'**
+  String get actionEdit;
+
+  /// No description provided for @actionDiscard.
+  ///
+  /// In ru, this message translates to:
+  /// **'Списать'**
+  String get actionDiscard;
+
+  /// No description provided for @actionAddBatch.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ещё партию'**
+  String get actionAddBatch;
+
+  /// No description provided for @useAmountLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сколько берём'**
+  String get useAmountLabel;
+
+  /// No description provided for @useQuarter.
+  ///
+  /// In ru, this message translates to:
+  /// **'Четверть'**
+  String get useQuarter;
+
+  /// No description provided for @useHalf.
+  ///
+  /// In ru, this message translates to:
+  /// **'Половина'**
+  String get useHalf;
+
+  /// No description provided for @useAll.
+  ///
+  /// In ru, this message translates to:
+  /// **'Всё'**
+  String get useAll;
+
+  /// No description provided for @useRemaining.
+  ///
+  /// In ru, this message translates to:
+  /// **'Останется {value}'**
+  String useRemaining(String value);
+
+  /// No description provided for @useWillBeUsedUp.
+  ///
+  /// In ru, this message translates to:
+  /// **'Запас уйдёт в использованные'**
+  String get useWillBeUsedUp;
+
+  /// No description provided for @useConfirm.
+  ///
+  /// In ru, this message translates to:
+  /// **'Подтвердить'**
+  String get useConfirm;
+
+  /// No description provided for @reasonCooked.
+  ///
+  /// In ru, this message translates to:
+  /// **'Приготовили'**
+  String get reasonCooked;
+
+  /// No description provided for @reasonConsumed.
+  ///
+  /// In ru, this message translates to:
+  /// **'Съели'**
+  String get reasonConsumed;
+
+  /// No description provided for @reasonSpoiled.
+  ///
+  /// In ru, this message translates to:
+  /// **'Испортилось'**
+  String get reasonSpoiled;
+
+  /// No description provided for @reasonThrown.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выбросили'**
+  String get reasonThrown;
+
+  /// No description provided for @toastUsed.
+  ///
+  /// In ru, this message translates to:
+  /// **'Использовали'**
+  String get toastUsed;
+
+  /// No description provided for @toastDiscarded.
+  ///
+  /// In ru, this message translates to:
+  /// **'Списано'**
+  String get toastDiscarded;
+
   /// No description provided for @urgentTitle.
   ///
   /// In ru, this message translates to:
