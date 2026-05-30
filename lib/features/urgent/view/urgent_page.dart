@@ -36,43 +36,50 @@ class UrgentPage extends StatelessWidget {
                 if (sections.isEmpty) {
                   return const _UrgentEmpty();
                 }
-                return ListView(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.l,
-                    0,
-                    AppSpacing.l,
-                    AppSpacing.giant,
-                  ),
+                return Stack(
                   children: [
-                    for (final s in sections) ...[
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          top: AppSpacing.m,
-                          bottom: AppSpacing.s,
-                        ),
-                        child: Text(
-                          s.title,
-                          style: context.textTheme.bodySmall?.copyWith(
-                            color: context.colors.textMuted,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
+                    const Positioned.fill(child: _UrgentBackground()),
+                    ListView(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.l,
+                        0,
+                        AppSpacing.l,
+                        AppSpacing.giant,
                       ),
-                      for (final entry in s.items)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: AppSpacing.m),
-                          child: StockCard(
-                            entry: entry,
-                            onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    ProductDetailPage(entryId: entry.id),
+                      children: [
+                        for (final s in sections) ...[
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              top: AppSpacing.m,
+                              bottom: AppSpacing.s,
+                            ),
+                            child: Text(
+                              s.title,
+                              style: context.textTheme.bodySmall?.copyWith(
+                                color: context.colors.textMuted,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
-                            onUse: () => showUseSheet(context, entry),
                           ),
-                        ),
-                    ],
+                          for (final entry in s.items)
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: AppSpacing.m,
+                              ),
+                              child: StockCard(
+                                entry: entry,
+                                onTap: () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        ProductDetailPage(entryId: entry.id),
+                                  ),
+                                ),
+                                onUse: () => showUseSheet(context, entry),
+                              ),
+                            ),
+                        ],
+                      ],
+                    ),
                   ],
                 );
               },
@@ -107,7 +114,9 @@ class UrgentPage extends StatelessWidget {
     }
 
     int byDays(StockEntry a, StockEntry b) =>
-        (a.expiryInfo(today).daysLeft ?? 0).compareTo(b.expiryInfo(today).daysLeft ?? 0);
+        (a.expiryInfo(today).daysLeft ?? 0).compareTo(
+          b.expiryInfo(today).daysLeft ?? 0,
+        );
     expired.sort(byDays);
     upcoming.sort(byDays);
 
@@ -148,7 +157,10 @@ class _UrgentEmpty extends StatelessWidget {
               top: h * 0.5,
               child: Opacity(
                 opacity: _opacity,
-                child: Image.asset('assets/images/blueberry.png', width: w * 0.3),
+                child: Image.asset(
+                  'assets/images/blueberry.png',
+                  width: w * 0.3,
+                ),
               ),
             ),
             Positioned(
@@ -169,11 +181,56 @@ class _UrgentEmpty extends StatelessWidget {
                     color: colors.textFaint,
                   ),
                   const SizedBox(height: AppSpacing.m),
-                  Text(
-                    l.urgentEmpty,
-                    style: context.textTheme.titleMedium,
-                  ),
+                  Text(l.urgentEmpty, style: context.textTheme.titleMedium),
                 ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// Фон при наличии просрочки: грустные маскоты с прозрачностью 80%.
+class _UrgentBackground extends StatelessWidget {
+  const _UrgentBackground();
+
+  static const double _opacity = 0.2;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, c) {
+        final w = c.maxWidth;
+        final h = c.maxHeight;
+        return Stack(
+          children: [
+            Positioned(
+              right: w * 0.02,
+              top: h * 0.02,
+              child: Opacity(
+                opacity: _opacity,
+                child: Image.asset('assets/images/tomato.png', width: w * 0.24),
+              ),
+            ),
+            Positioned(
+              right: -w * 0.05,
+              top: h * 0.42,
+              child: Opacity(
+                opacity: _opacity,
+                child: Image.asset('assets/images/onion.png', width: w * 0.34),
+              ),
+            ),
+            Positioned(
+              left: -w * 0.04,
+              bottom: h * 0.1,
+              child: Opacity(
+                opacity: _opacity,
+                child: Image.asset(
+                  'assets/images/holodos_sad.png',
+                  width: w * 0.34,
+                ),
               ),
             ),
           ],
