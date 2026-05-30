@@ -9,6 +9,7 @@ import '../../../domain/entities/stock.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/search_field.dart';
+import '../../reports/view/reports_page.dart';
 import '../../used_up/view/used_up_page.dart';
 import '../bloc/inventory_cubit.dart';
 import '../bloc/inventory_state.dart';
@@ -146,6 +147,16 @@ class _Header extends StatelessWidget {
               ),
             ],
           ),
+        ),
+        IconButton(
+          tooltip: AppL10n.of(context).reportsTitle,
+          icon: Icon(Icons.summarize_outlined, color: colors.textMuted),
+          onPressed: () {
+            AppHaptics.light();
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const ReportsPage()),
+            );
+          },
         ),
         IconButton(
           tooltip: AppL10n.of(context).usedUpTitle,

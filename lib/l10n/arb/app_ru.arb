@@ -139,6 +139,14 @@
   "usedUpEmpty": "Здесь пока пусто",
   "usedUpLabel": "Израсходовано",
 
+  "reportsTitle": "Отчёты",
+  "reportExpired": "Просроченные",
+  "reportCurrentAll": "Все запасы",
+  "reportCopied": "Скопировано в буфер",
+  "reportEmpty": "Список пуст",
+  "reportCopy": "Копировать",
+  "reportDownload": "Скачать .txt",
+
   "urgentTitle": "Срочное",
   "urgentEmpty": "Всё под контролем",
   "urgentExpired": "Просрочено",

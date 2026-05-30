@@ -669,6 +669,48 @@ abstract class AppL10n {
   /// **'Израсходовано'**
   String get usedUpLabel;
 
+  /// No description provided for @reportsTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отчёты'**
+  String get reportsTitle;
+
+  /// No description provided for @reportExpired.
+  ///
+  /// In ru, this message translates to:
+  /// **'Просроченные'**
+  String get reportExpired;
+
+  /// No description provided for @reportCurrentAll.
+  ///
+  /// In ru, this message translates to:
+  /// **'Все запасы'**
+  String get reportCurrentAll;
+
+  /// No description provided for @reportCopied.
+  ///
+  /// In ru, this message translates to:
+  /// **'Скопировано в буфер'**
+  String get reportCopied;
+
+  /// No description provided for @reportEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Список пуст'**
+  String get reportEmpty;
+
+  /// No description provided for @reportCopy.
+  ///
+  /// In ru, this message translates to:
+  /// **'Копировать'**
+  String get reportCopy;
+
+  /// No description provided for @reportDownload.
+  ///
+  /// In ru, this message translates to:
+  /// **'Скачать .txt'**
+  String get reportDownload;
+
   /// No description provided for @urgentTitle.
   ///
   /// In ru, this message translates to:

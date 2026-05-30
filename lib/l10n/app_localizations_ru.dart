@@ -327,6 +327,27 @@ class AppL10nRu extends AppL10n {
   String get usedUpLabel => 'Израсходовано';
 
   @override
+  String get reportsTitle => 'Отчёты';
+
+  @override
+  String get reportExpired => 'Просроченные';
+
+  @override
+  String get reportCurrentAll => 'Все запасы';
+
+  @override
+  String get reportCopied => 'Скопировано в буфер';
+
+  @override
+  String get reportEmpty => 'Список пуст';
+
+  @override
+  String get reportCopy => 'Копировать';
+
+  @override
+  String get reportDownload => 'Скачать .txt';
+
+  @override
   String get urgentTitle => 'Срочное';
 
   @override
