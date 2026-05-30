@@ -37,13 +37,31 @@ class UrgentPage extends StatelessWidget {
             );
           }
 
+          final headerWithTomato = Padding(
+            padding: const EdgeInsets.all(AppSpacing.l),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l.urgentTitle,
+                    style: context.textTheme.headlineMedium,
+                  ),
+                ),
+                Opacity(
+                  opacity: 0.4,
+                  child: Image.asset('assets/images/tomato.png', width: 60),
+                ),
+              ],
+            ),
+          );
+
           return Stack(
             children: [
               const Positioned.fill(child: _UrgentBackground()),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  header,
+                  headerWithTomato,
                   Expanded(
                     child: ListView(
                       padding: const EdgeInsets.fromLTRB(
@@ -212,14 +230,6 @@ class _UrgentBackground extends StatelessWidget {
         final h = c.maxHeight;
         return Stack(
           children: [
-            Positioned(
-              right: w * 0.03,
-              top: h * 0.05,
-              child: Opacity(
-                opacity: _opacity,
-                child: Image.asset('assets/images/tomato.png', width: w * 0.18),
-              ),
-            ),
             Positioned(
               right: -w * 0.05,
               top: h * 0.42,
